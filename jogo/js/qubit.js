@@ -248,7 +248,7 @@
 
     iniciarArraste: function (e) {
       const cursor = e.detail && e.detail.cursorEl;
-      if (!cursor) return;
+      if (!cursor || !QL.visivel(this.el.object3D)) return;
 
       if (cursor === this.el.sceneEl) {
         // Mouse no computador: pausa o olhar para o arraste girar só o qubit.
@@ -315,7 +315,7 @@
     },
 
     iniciarPinca: function (mao, posMundo) {
-      if (this.arrastando) return false;
+      if (this.arrastando || !QL.visivel(this.el.object3D)) return false;
       const { centro, raio } = this.centroERaioMundo();
       const dir = posMundo.clone().sub(centro);
       const distancia = dir.length();

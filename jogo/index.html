@@ -6,73 +6,103 @@
     <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
     <script src="js/ambiente.js"></script>
     <script src="js/qubit.js"></script>
+    <script src="js/menu.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true"
-             fog="type: exponential; color: #020818; density: 0.02"
+             fog="type: exponential; color: #020818; density: 0.015"
              cursor="rayOrigin: mouse"
-             raycaster="objects: .interagivel, .chao">
+             raycaster="objects: .interagivel, .botao, .chao"
+             mapas="inicial: menu">
+
+      <!-- ===== Elementos comuns a todos os mapas ===== -->
 
       <!-- Céu azul escuro de noite -->
       <a-sky color="#071640" material="fog: false"></a-sky>
       <a-entity estrelas></a-entity>
 
-      <!-- Luz fraca de noite + brilho ciano vindo da plataforma -->
+      <!-- Luz fraca de noite + brilho ciano vindo do centro -->
       <a-entity light="type: ambient; color: #3a4a80; intensity: 0.5"></a-entity>
       <a-entity light="type: point; color: #00ffff; intensity: 1.2; distance: 12" position="0 0.5 0"></a-entity>
 
-      <!-- Plataforma -->
-      <a-box position="0 -0.25 0" width="10" height="0.5" depth="10"
-             material="color: #030712; roughness: 0.9"></a-box>
-      <a-entity grade-neon="tamanho: 10; divisoes: 10" position="0 0.005 0"></a-entity>
-
-      <!-- Área clicável do chão (invisível) + anel que marca o destino -->
-      <a-plane class="chao" rotation="-90 0 0" position="0 0.01 0" width="9.4" height="9.4"
-               material="transparent: true; opacity: 0; depthWrite: false"
-               andar-clicando="rig: #jogador; marcador: #marcador-destino"></a-plane>
+      <!-- Anel que marca o destino ao apontar para o chão -->
       <a-ring id="marcador-destino" rotation="-90 0 0" radius-inner="0.14" radius-outer="0.2" visible="false"
               material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1; side: double; transparent: true; opacity: 0.9"></a-ring>
 
-      <!-- Borda neon da plataforma -->
-      <a-box position="0 0.01 5" width="10.05" height="0.04" depth="0.05" material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-box>
-      <a-box position="0 0.01 -5" width="10.05" height="0.04" depth="0.05" material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-box>
-      <a-box position="5 0.01 0" width="0.05" height="0.04" depth="10.05" material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-box>
-      <a-box position="-5 0.01 0" width="0.05" height="0.04" depth="10.05" material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-box>
+      <!-- ===== Mapa: Menu ===== -->
+      <a-entity mapa="nome: menu; tamanho: 10; inicioZ: 2.5">
+        <a-entity plataforma-neon="tamanho: 10"></a-entity>
 
-      <!-- Pedestal do qubit -->
-      <!-- Pilar com 3/5 da altura do jogador (1,6 m → 0,96 m) -->
-      <a-cylinder position="0 0.48 0" radius="0.16" height="0.96"
-                  material="color: #050b1c; roughness: 0.6"></a-cylinder>
-      <a-torus position="0 0.96 0" rotation="90 0 0" radius="0.16" radius-tubular="0.008"
-               material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-torus>
-      <a-torus position="0 0.02 0" rotation="90 0 0" radius="0.22" radius-tubular="0.008"
-               material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-torus>
+        <a-entity botao-neon="texto: QUBIT LAB VR; largura: 3.6; altura: 0.9; tamanhoTexto: 0.5"
+                  position="0 2.75 -2.2"></a-entity>
 
-      <!-- Qubit: diâmetro = 3/5 da altura do jogador (1,6 m → 0,96 m), apoiado no topo do pilar.
-           Modelado com raio 0,27 m e ampliado 1,78× (0,27 × 1,78 ≈ 0,48 m de raio). -->
-      <a-entity id="qubit" qubit="raio: 0.27; theta: 0; phi: 0" position="0 1.49 0" scale="1.78 1.78 1.78"></a-entity>
+        <a-entity class="botao" position="-1.55 1.45 -1.6" rotation="0 20 0"
+                  botao-neon="texto: 1. Quântico; subtexto: Fenômenos quânticos; largura: 1.3; altura: 0.75; acao: mapa:quantico"></a-entity>
+        <a-entity class="botao" position="0 1.45 -1.9"
+                  botao-neon="texto: 2. Qubit; subtexto: Esfera de Bloch; largura: 1.3; altura: 0.75; acao: mapa:qubit"></a-entity>
+        <a-entity class="botao" position="1.55 1.45 -1.6" rotation="0 -20 0"
+                  botao-neon="texto: 3. Circuit; subtexto: Montar circuitos; largura: 1.3; altura: 0.75; acao: mapa:circuit"></a-entity>
+      </a-entity>
 
-      <!-- Painel com o estado do qubit -->
-      <a-entity painel-qubit="qubit: #qubit; largura: 1.3" position="1.45 1.5 0"></a-entity>
+      <!-- ===== Mapa: Quântico (plataforma grande) ===== -->
+      <a-entity mapa="nome: quantico; tamanho: 40; inicioZ: 3">
+        <a-entity plataforma-neon="tamanho: 40"></a-entity>
+        <a-entity botao-neon="texto: QUÂNTICO; subtexto: Fenômenos quânticos — em construção; largura: 3.4; altura: 1.1; tamanhoTexto: 0.4"
+                  position="0 2.4 -3"></a-entity>
+        <a-entity class="botao" position="-1.2 0.03 0.8" rotation="-90 0 0"
+                  botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
+      </a-entity>
 
-      <!-- Jogador: anda pela plataforma (clique no chão, WASD no computador;
-           laser + gatilho ou analógico esquerdo no headset) -->
-      <a-entity id="jogador" position="0 0 0" limites-plataforma="raioObstaculo: 0.75">
-        <a-entity camera position="0 1.6 2.8"
+      <!-- ===== Mapa: Qubit (esfera de Bloch) ===== -->
+      <a-entity mapa="nome: qubit; tamanho: 10; inicioZ: 2.8; obstaculo: 0.75">
+        <a-entity plataforma-neon="tamanho: 10"></a-entity>
+
+        <!-- Pilar com 3/5 da altura do jogador (1,6 m → 0,96 m) -->
+        <a-cylinder position="0 0.48 0" radius="0.16" height="0.96"
+                    material="color: #050b1c; roughness: 0.6"></a-cylinder>
+        <a-torus position="0 0.96 0" rotation="90 0 0" radius="0.16" radius-tubular="0.008"
+                 material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-torus>
+        <a-torus position="0 0.02 0" rotation="90 0 0" radius="0.22" radius-tubular="0.008"
+                 material="color: #00ffff; emissive: #00ffff; emissiveIntensity: 1"></a-torus>
+
+        <!-- Qubit: diâmetro = 3/5 da altura do jogador (1,6 m → 0,96 m), apoiado no topo do pilar.
+             Modelado com raio 0,27 m e ampliado 1,78× (0,27 × 1,78 ≈ 0,48 m de raio). -->
+        <a-entity id="qubit" qubit="raio: 0.27; theta: 0; phi: 0" position="0 1.49 0" scale="1.78 1.78 1.78"></a-entity>
+
+        <!-- Painel com o estado do qubit -->
+        <a-entity painel-qubit="qubit: #qubit; largura: 1.3" position="1.45 1.5 0"></a-entity>
+
+        <a-entity class="botao" position="-1.2 0.03 0.6" rotation="-90 0 0"
+                  botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
+      </a-entity>
+
+      <!-- ===== Mapa: Circuit (plataforma grande) ===== -->
+      <a-entity mapa="nome: circuit; tamanho: 40; inicioZ: 3">
+        <a-entity plataforma-neon="tamanho: 40"></a-entity>
+        <a-entity botao-neon="texto: CIRCUIT; subtexto: Montar circuitos quânticos — em construção; largura: 3.4; altura: 1.1; tamanhoTexto: 0.4"
+                  position="0 2.4 -3"></a-entity>
+        <a-entity class="botao" position="-1.2 0.03 0.8" rotation="-90 0 0"
+                  botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
+      </a-entity>
+
+      <!-- ===== Jogador ===== -->
+      <!-- Anda por clique no chão, WASD, laser + gatilho, analógico ou mão (apontar e pinçar) -->
+      <a-entity id="jogador" position="0 0 2.5" limites-plataforma mover-jogador>
+        <a-entity camera position="0 1.6 0"
                   look-controls="pointerLockEnabled: false"
                   wasd-controls="acceleration: 25"></a-entity>
-        <a-entity laser-controls="hand: right" raycaster="objects: .interagivel, .chao; lineColor: #00ffff"></a-entity>
-        <a-entity laser-controls="hand: left" raycaster="objects: .interagivel, .chao; lineColor: #00ffff"
+        <a-entity laser-controls="hand: right" raycaster="objects: .interagivel, .botao, .chao; lineColor: #00ffff"></a-entity>
+        <a-entity laser-controls="hand: left" raycaster="objects: .interagivel, .botao, .chao; lineColor: #00ffff"
                   andar-vr="rig: #jogador"></a-entity>
         <!-- Mãos sem controles (Meta Quest):
              - pinçar perto do qubit para pegar e girar
-             - apontar a mão para o chão, pinçar e soltar para teleportar -->
+             - apontar para um botão ou para o chão, pinçar e soltar para clicar/teleportar -->
         <a-entity hand-tracking-controls="hand: right; modelColor: #00ffff; modelOpacity: 0.7"
                   pinca-qubit="qubit: #qubit"
-                  andar-mao="chao: .chao; lado: 1"></a-entity>
+                  andar-mao="lado: 1"></a-entity>
         <a-entity hand-tracking-controls="hand: left; modelColor: #00ffff; modelOpacity: 0.7"
                   pinca-qubit="qubit: #qubit"
-                  andar-mao="chao: .chao; lado: -1"></a-entity>
+                  andar-mao="lado: -1"></a-entity>
       </a-entity>
     </a-scene>
   </body>
