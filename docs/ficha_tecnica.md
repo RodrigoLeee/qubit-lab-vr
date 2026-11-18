@@ -73,3 +73,38 @@ Visualização guiada dos conceitos centrais:
   - *Mitigação:* mostrar amplitudes e probabilidades junto da animação.
 - **Encantamento sem aprendizado:** o visual "elétrico" pode impressionar sem ensinar.
   - *Mitigação:* cada fenômeno termina com uma pergunta ou um desafio rápido.
+
+## Dados coletados do usuário (longo prazo)
+
+Mapeamento do que o headset capta do corpo do usuário e de como o jogo usa (ou pode usar) esses dados. A base é o **Meta Quest 3** via navegador (WebXR).
+
+### Coletado hoje
+
+| Sinal | O que é captado | Como o jogo usa |
+|---|---|---|
+| **Interação do headset (cabeça)** | Posição e rotação da cabeça em 6 graus de liberdade: para onde o usuário olha, em diferentes direções, e onde está no espaço | Câmera da cena: olhar em volta (360°), andar fisicamente pela sala, deixar o painel sempre virado para o usuário |
+| **Interação com as mãos** | Posição das 25 articulações de cada mão (hand tracking) e o gesto de pinça (polegar + indicador) | Apontar e "clicar" (pinçar) para teleportar, pinçar o qubit para pegar e girar |
+| **Controles** (opcional) | Posição e rotação dos controles, gatilho e analógico | Laser para apontar, gatilho para clicar e girar o qubit, analógico para andar |
+
+### Derivável dos sinais acima (sem sensor extra)
+
+- **Altura do usuário:** altura da cabeça em relação ao chão, para ajustar o pilar e o qubit à altura de cada pessoa.
+- **Alcance do braço:** maior distância entre a mão e a cabeça, para posicionar objetos ao alcance.
+- **Mão dominante:** qual mão pinça e aponta mais.
+- **Atenção:** para onde a cabeça aponta e por quanto tempo (o Quest 3 não tem rastreamento ocular, então a direção da cabeça é usada como aproximação do olhar).
+- **Conforto e enjoo:** movimentos bruscos de cabeça, pausas longas ou saída antecipada podem indicar desconforto.
+
+### Possível no futuro
+
+- **Métricas de aprendizado:** tempo para encontrar cada estado no desafio, número de tentativas, quais estados geram mais erros.
+- **Mapa de calor do olhar:** quais partes da esfera de Bloch e do painel recebem mais atenção.
+- **Rastreamento ocular e facial:** só em headsets que têm esses sensores (por exemplo, o Meta Quest Pro), não no Quest 3.
+- **Ambiente real (realidade mista):** detecção de paredes, mesas e profundidade para posicionar o qubit no espaço do usuário.
+
+### Privacidade
+
+- Hoje os dados são usados **só em tempo real**, dentro do navegador: nada é gravado nem enviado para servidor.
+- Dados de movimento do corpo podem identificar uma pessoa (o jeito de andar e de mexer a cabeça é quase único). Se no futuro houver coleta de métricas:
+  - pedir **consentimento** explícito antes de coletar;
+  - guardar apenas dados **agregados ou anonimizados** (por exemplo, "tempo para encontrar |+⟩", não a trajetória completa da cabeça);
+  - seguir a **LGPD**, informando o que é coletado, para quê e por quanto tempo.

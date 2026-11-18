@@ -1,53 +1,102 @@
+# Inteli - Instituto de Tecnologia e Liderança
+
+<p align="center">
+<a href="https://www.inteli.edu.br/"><b>Inteli - Instituto de Tecnologia e Liderança</b></a>
+</p>
+
 # Qubit Lab VR
 
-Experiência em **realidade virtual** para aprender computação quântica por imersão. Em vez de fórmulas e diagramas numa tela, o usuário entra em um ambiente em escala atômica, vê os fenômenos quânticos acontecendo ao seu redor e interage com qubits com as próprias mãos.
+## Integrante:
+- Rodrigo Hu Tchie Lee
 
-> Projeto desenvolvido para a disciplina de computação quântica, usando A-Frame (WebXR) servido pelo Caddy.
+## Descrição
 
-## A ideia
+O **Qubit Lab VR** é uma experiência em **realidade virtual** para aprender computação quântica por imersão. Em vez de fórmulas e diagramas numa tela, o usuário entra em um ambiente neon em escala atômica, vê os fenômenos quânticos acontecendo ao seu redor e interage com qubits com as próprias mãos, no Meta Quest 3 ou no navegador do computador.
 
-O jogo tem **três modos**, que vão do entendimento conceitual à construção:
+O jogo começa em um menu neon com **três modos**:
 
-| Modo | Nome | Objetivo |
-|---|---|---|
-| 1 | **Observar** — fenômenos quânticos | Ensino teórico: visualizar superposição, emaranhamento, medição e interferência como eventos no espaço ao redor do usuário. |
-| 2 | **Brincar** — interagir com qubits | Pegar, rotacionar e manipular um qubit (esfera de Bloch) e ver em tempo real como o estado e as probabilidades de medição mudam. |
-| 3 | **Construir** — montar circuitos | Encaixar portas quânticas (H, X, Z, CNOT, …) em fios de qubits, executar o circuito e observar o resultado. |
+| Modo | Nome | Objetivo | Status |
+|---|---|---|---|
+| 1 | **Quântico** | Visualizar fenômenos quânticos (superposição, emaranhamento, medição) | Em desenvolvimento |
+| 2 | **Qubit** | Girar um qubit na esfera de Bloch e encontrar estados, com o ciclo trigonométrico no equador | Funcional |
+| 3 | **Circuit** | Montar circuitos quânticos com portas (H, X, Z, CNOT…) | Em desenvolvimento |
 
-### Por que VR?
+**Por que VR?** Em 2D, faria mais sentido criar diagramas e simuladores voltados a cálculo. Aqui o objetivo é o **aprendizado imersivo**: estar "dentro" da escala atômica permite sentir os conceitos (estados, rotações, correlações) em vez de só calculá-los.
 
-Em 2D, faria mais sentido criar diagramas, desenhos matemáticos e simuladores voltados a cálculo. O objetivo aqui é outro: **aprendizado imersivo**. Estar "dentro" da escala atômica, num ambiente elétrico e tecnológico, permite sentir os conceitos (estados, rotações, correlações) em vez de só calculá-los.
+## Links
 
-Mais detalhes em [`ficha_tecnica.md`](ficha_tecnica.md).
+- [Documentação do projeto](docs/projeto.md)
+- [Ficha técnica da experiência imersiva](docs/ficha_tecnica.md)
+- [Registro diário (log)](docs/registro_log.md)
 
-## Tecnologias
+## Estrutura de pastas
 
-- [A-Frame](https://aframe.io): framework web para cenas 3D/VR (WebXR), roda no navegador e no headset.
-- [Caddy](https://caddyserver.com): servidor web com HTTPS local, necessário para o WebXR funcionar no headset.
-- Docker (opcional): empacota a cena e o servidor numa imagem.
+```
+|--> docs
+  | projeto.md
+  | ficha_tecnica.md
+  | registro_log.md
+  |--> imagens
+|--> jogo
+  | index.html
+  |--> js
+|--> 01-aframe-minimo
+|--> 02-caddy-local
+|--> 03-caddy-docker
+|--> 04-aframe-caddy-docker
+| LICENSE
+| README.md
+```
 
-## Como rodar
+Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 
-O repositório partiu de um template com quatro exemplos independentes, do mais simples ao mais completo:
+- **README.md:** arquivo que serve como guia e explicação geral sobre o projeto (o mesmo que você está lendo agora).
+- **docs:** todos os documentos do projeto (documentação, ficha técnica e registro diário). A pasta `imagens` guarda as capturas de cada versão.
+- **jogo:** código-fonte da experiência em A-Frame (`index.html` monta a cena; `js/` tem os componentes de ambiente, qubit e menu).
+- **01 a 04:** exemplos do template de origem, do A-Frame mínimo até o A-Frame servido pelo Caddy em Docker com HTTPS.
 
-| Diretório | O que mostra | Precisa de |
-|---|---|---|
-| [`01-aframe-minimo`](01-aframe-minimo) | Cena A-Frame aberta direto no navegador | Só o navegador |
-| [`02-caddy-local`](02-caddy-local) | Servir uma página estática com o Caddy instalado na máquina | Caddy |
-| [`03-caddy-docker`](03-caddy-docker) | O mesmo servidor, usando a imagem oficial do Caddy no Docker | Docker |
-| [`04-aframe-caddy-docker`](04-aframe-caddy-docker) | A cena A-Frame empacotada em uma imagem Docker com o Caddy | Docker |
+## Configuração para desenvolvimento
 
-Cada diretório tem um `README.md` com o passo a passo. O exemplo 02 responde em http://localhost:8080; os exemplos 03 e 04 (Docker) respondem em https://localhost:8443.
+Instale o git e clone este repositório:
 
-## Documentação do projeto
+```bash
+git clone https://github.com/RodrigoLeee/qubit-lab-vr.git
+```
 
-- [`ficha_tecnica.md`](ficha_tecnica.md): ficha técnica da experiência imersiva.
-- [`registro_log.md`](registro_log.md): registro diário do desenvolvimento.
+**No computador** (visualização com mouse e teclado), sirva a pasta `jogo` com qualquer servidor estático, por exemplo:
 
-## Autor
+```bash
+python -m http.server 8001 --directory jogo
+```
 
-Rodrigo Hu Tchie Lee
+Acesse http://localhost:8001.
 
-## Créditos
+**No headset (Meta Quest 3)**, o WebXR exige HTTPS. Use o Caddy em Docker do exemplo [`04-aframe-caddy-docker`](04-aframe-caddy-docker), copiando o conteúdo de `jogo/` para a pasta `site/`, e acesse pelo IP do computador na rede (passo a passo no README do exemplo 04).
 
-Baseado no template [Repositorio-Template-Caddy-AFrame](https://github.com/Murilo-ZC/Repositorio-Template-Caddy-AFrame), de Murilo Zanini de Carvalho (licença MIT).
+### Tecnologias
+
+- [A-Frame 1.8](https://aframe.io) (WebXR sobre three.js)
+- JavaScript, organizado em componentes A-Frame
+- [Caddy](https://caddyserver.com) e Docker para servir com HTTPS
+
+## Histórico de lançamentos
+
+* 0.3.0 - 18/11/2026
+    * Menu neon com os modos Quântico, Qubit e Circuit
+    * Plataformas grandes para os modos Quântico e Circuit (em desenvolvimento)
+    * Botão **MENU** no chão de cada mapa
+    * Clique em botões com mouse, controle ou apontando e pinçando com a mão
+* 0.2.0 - 17/11/2026
+    * Ambiente noturno com plataforma neon
+    * Qubit interativo na esfera de Bloch, com ciclo trigonométrico, painel de estado e desafio
+    * Interação e movimentação com mouse, controles e mãos (hand tracking do Meta Quest 3)
+    * Documentação: ficha técnica e projeto
+* 0.1.0 - 16/11/2026
+    * Criação do repositório a partir do template Caddy + A-Frame
+    * Definição da ideia e do contexto com a disciplina de computação quântica
+
+## Licença/License
+
+O código-fonte e os exemplos herdados do template [Repositorio-Template-Caddy-AFrame](https://github.com/Murilo-ZC/Repositorio-Template-Caddy-AFrame), de Murilo Zanini de Carvalho, seguem a licença MIT (ver [LICENSE](LICENSE)).
+
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/RodrigoLeee/qubit-lab-vr">Qubit Lab VR</a> by <span property="cc:attributionName">Inteli, Rodrigo Hu Tchie Lee</span> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>

@@ -1,12 +1,85 @@
-# Projeto — Qubit Lab VR
+# Projeto: Qubit Lab VR
 
-Acompanhamento visual das versões do jogo.
+## Integrante:
+- Rodrigo Hu Tchie Lee
 
-## Versão 1 — Plataforma neon
+# Projeto · Computação Quântica – Experiência Imersiva em Realidade Virtual
 
-![Versão 1: plataforma neon sob o céu noturno](docs/imagens/v1-plataforma-neon.png)
+## Sumário
 
-Primeira versão do ambiente do jogo: o espaço base onde os modos (Observar, Brincar e Construir) vão acontecer.
+1. [Introdução](#1-introdução)
+2. [Visão Geral da Solução](#2-visão-geral-da-solução)
+3. [Ficha Técnica da Experiência](#3-ficha-técnica-da-experiência)
+4. [Arquitetura e Tecnologias](#4-arquitetura-e-tecnologias)
+5. [Desenvolvimento por Versões](#5-desenvolvimento-por-versões)
+6. [Dados Captados do Usuário](#6-dados-captados-do-usuário)
+7. [Próximos Passos](#7-próximos-passos)
+8. [Referências](#8-referências)
+
+# 1. Introdução
+
+## 1.1 Termos e Abreviações
+
+| Termo | Significado |
+|---|---|
+| **VR** | Realidade virtual (*Virtual Reality*) |
+| **WebXR** | API do navegador para experiências de realidade virtual e aumentada |
+| **A-Frame** | Framework web para cenas 3D/VR, construído sobre o three.js |
+| **Qubit** | Unidade básica de informação quântica; pode estar em superposição de \|0⟩ e \|1⟩ |
+| **Esfera de Bloch** | Representação geométrica do estado de um qubit como um ponto na superfície de uma esfera |
+| **θ, φ** | Ângulos que definem o estado do qubit na esfera de Bloch: θ a partir de \|0⟩ e φ no equador |
+| **Hand tracking** | Rastreamento das mãos pelo headset, sem uso de controles |
+
+## 1.2 Contexto e Motivação
+
+Conceitos de computação quântica, como superposição, medição e emaranhamento, são abstratos e costumam ser ensinados com fórmulas, diagramas e simuladores voltados a cálculo. Esses recursos ajudam a calcular, mas nem sempre a **construir intuição**.
+
+A realidade virtual permite colocar o estudante "dentro" do fenômeno: objetos tridimensionais, como a esfera de Bloch, viram algo que se pega e gira com as mãos.
+
+## 1.3 Objetivo
+
+Desenvolver uma experiência imersiva em VR que apoie o aprendizado de computação quântica, permitindo ao usuário **observar** fenômenos quânticos, **interagir** com qubits e **montar** circuitos quânticos em um ambiente 3D.
+
+# 2. Visão Geral da Solução
+
+O jogo começa em um **menu neon** e se divide em três modos, cada um em seu próprio mapa:
+
+| Modo | Mapa | Descrição | Status |
+|---|---|---|---|
+| 1 | **Quântico** | Visualização dos fenômenos quânticos (superposição, medição, emaranhamento, interferência) | Em desenvolvimento |
+| 2 | **Qubit** | Rotacionar e interagir com um qubit na esfera de Bloch para encontrar estados | Funcional |
+| 3 | **Circuit** | Montar circuitos quânticos com portas H, X, Y, Z e CNOT | Em desenvolvimento |
+
+Cada mapa tem um botão **MENU** no chão, em ciano neon, para voltar ao menu. A troca entre mapas acontece na mesma cena, sem tirar o usuário do modo VR.
+
+# 3. Ficha Técnica da Experiência
+
+A ficha técnica completa está em [`ficha_tecnica.md`](ficha_tecnica.md). Ela especifica a experiência nos eixos de imersão:
+
+- **Domínio:** onde a experiência acontece (nível atômico, ambiente virtual-elétrico-tecnológico).
+- **Sentir:** a sensação elétrica e o propósito dela.
+- **Teste da tela:** por que a experiência precisa ser em VR, e não numa tela.
+- **Moldura:** o que fica dentro da cena e o que fica nos painéis.
+- **Corpo:** onde o usuário está e o que pode fazer.
+- **Risco:** como a visualização poderia enganar, e as mitigações.
+
+# 4. Arquitetura e Tecnologias
+
+- **A-Frame 1.8** (WebXR sobre three.js), em JavaScript, organizado em componentes:
+  - `jogo/js/ambiente.js`: céu, plataformas neon, movimentação e limites do jogador;
+  - `jogo/js/qubit.js`: qubit na esfera de Bloch, painel de estado e gestos de pinça;
+  - `jogo/js/menu.js`: botões neon e gerenciador de mapas.
+- **Servidor:** servidor estático para desenvolvimento no computador; **Caddy em Docker com HTTPS** para o headset, já que o WebXR exige contexto seguro.
+- **Plataforma-alvo:** Meta Quest 3 pelo navegador, com fallback para desktop (mouse e teclado).
+- **Versionamento:** branch `develop` para desenvolvimento e `main` para versões estáveis, com mensagens no padrão Conventional Commits.
+
+# 5. Desenvolvimento por Versões
+
+## 5.1 Versão 1 — Plataforma neon
+
+![Versão 1: plataforma neon sob o céu noturno](imagens/v1-plataforma-neon.png)
+
+Primeira versão do ambiente do jogo: o espaço base onde os modos acontecem.
 
 - **Céu:** noite azul-escura com estrelas espalhadas no alto.
 - **Plataforma:** bloco preto de 10 × 10 m, flutuando no espaço.
@@ -14,4 +87,47 @@ Primeira versão do ambiente do jogo: o espaço base onde os modos (Observar, Br
 - **Iluminação:** luz ambiente fraca de noite, um brilho ciano saindo do centro da plataforma e neblina azul ao longe.
 - **Jogador:** começa em cima da plataforma. No computador, olha com o mouse e anda com WASD; no headset, usa os controles com laser ciano para apontar.
 
-Código: [`jogo/index.html`](jogo/index.html)
+## 5.2 Versão 2 — Qubit interativo (esfera de Bloch)
+
+![Versão 2: qubit na esfera de Bloch com o painel de estado](imagens/v2-qubit-bloch.png)
+
+Mapa **Qubit**: um qubit interativo em cima de um pilar neon, que o jogador gira para encontrar estados quânticos.
+
+- **Esfera de Bloch:** esfera translúcida com o vetor de estado |ψ⟩ em magenta e os estados da base marcados: |0⟩, |1⟩, |+⟩, |−⟩, |+i⟩ e |−i⟩.
+- **Ciclo trigonométrico:** o equador tem marcas a cada 15° e rótulos em 0°, 90°, 180° e 270°. Os arcos mostram os ângulos **θ** (a partir de |0⟩) e **φ** (no equador), e a linha tracejada projeta a ponta do vetor no plano do equador.
+- **Painel de estado:** mostra a fórmula |ψ⟩ = cos(θ/2)|0⟩ + e^(iφ)·sin(θ/2)|1⟩, os valores de θ, φ, α e β e as probabilidades P(0) e P(1) em barras.
+- **Desafio:** o painel pede para encontrar um estado (por exemplo, |−⟩); ao chegar perto dele, o acerto é confirmado e um novo alvo é sorteado.
+- **Escala:** qubit com diâmetro de 3/5 da altura do jogador, sobre um pilar também com 3/5 da altura.
+- **Interação:** girar o qubit arrastando com o mouse, com o laser e o gatilho do controle ou **pinçando com a mão** no Meta Quest 3, sem controles.
+- **Movimentação:** andar com WASD, com o analógico ou **apontando para o chão** e clicando (mouse ou controle) ou pinçando (mão).
+
+## 5.3 Versão 3 — Menu e mapas
+
+- **Menu neon** com a mesma estética da plataforma, com os botões **1. Quântico**, **2. Qubit** e **3. Circuit**.
+- **Mapas Quântico e Circuit:** plataformas de 40 × 40 m com as mesmas mecânicas de movimentação; o conteúdo dos modos está em desenvolvimento.
+- **Botão MENU** no chão de cada mapa, para voltar ao menu.
+- Botões acionáveis por mouse, laser do controle ou apontando e pinçando com a mão.
+
+# 6. Dados Captados do Usuário
+
+O detalhamento está na seção "Dados coletados do usuário" da [ficha técnica](ficha_tecnica.md). Em resumo:
+
+- **Cabeça (headset):** posição e rotação em 6 graus de liberdade, usadas para olhar em volta, andar fisicamente e orientar os painéis.
+- **Mãos (hand tracking):** posição das articulações e gesto de pinça, usados para apontar, clicar, teleportar e girar o qubit.
+- **Controles (opcional):** posição, rotação, gatilho e analógico.
+- Os dados são usados **só em tempo real**, no navegador; nada é gravado nem enviado.
+
+# 7. Próximos Passos
+
+- Testar no Meta Quest 3 via HTTPS e ajustar a sensibilidade dos gestos.
+- Medição do qubit, com colapso aleatório segundo P(0) e P(1).
+- Conteúdo do modo **Quântico**: cenas de superposição, medição, emaranhamento e interferência.
+- Conteúdo do modo **Circuit**: bancada com portas quânticas e geração de código Qiskit / OpenQASM a partir do circuito montado.
+- Sons e feedback tátil.
+
+# 8. Referências
+
+- A-Frame. Documentação. Disponível em: https://aframe.io/docs/
+- IBM Quantum. Qiskit. Disponível em: https://www.ibm.com/quantum/qiskit
+- NIELSEN, M. A.; CHUANG, I. L. *Quantum Computation and Quantum Information*. Cambridge University Press, 2010.
+- W3C. WebXR Device API. Disponível em: https://www.w3.org/TR/webxr/
