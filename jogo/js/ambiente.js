@@ -1,8 +1,43 @@
-// Componentes do ambiente: céu, chão neon e movimentação do jogador.
+// Componentes do ambiente: céu, plataforma neon e movimentação do jogador.
 
-// Céu noturno: estrelas espalhadas no hemisfério de cima.
+// ---------- Utilitários compartilhados ----------
+window.QL = window.QL || {};
+
+// Distingue "clique" de mouse de um arraste para olhar em volta.
+QL.mouse = { down: null, moveu: false };
+window.addEventListener('mousedown', (e) => {
+  QL.mouse.down = { x: e.clientX, y: e.clientY };
+  QL.mouse.moveu = false;
+});
+window.addEventListener('mousemove', (e) => {
+  const d = QL.mouse.down;
+  if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6) QL.mouse.moveu = true;
+});
+QL.cliqueValido = function (e, sceneEl) {
+  const cursor = e.detail && e.detail.cursorEl;
+  return !(cursor === sceneEl && QL.mouse.moveu);
+};
+
+// Um objeto só está "no jogo" se ele e todos os pais estiverem visíveis.
+QL.visivel = function (obj) {
+  while (obj) {
+    if (!obj.visible) return false;
+    obj = obj.parent;
+  }
+  return true;
+};
+
+// Leva o jogador até um ponto do chão.
+QL.irPara = function (destino) {
+  const rig = document.querySelector('#jogador');
+  if (rig) rig.components['mover-jogador'].irPara(destino);
+};
+
+// ---------- Céu ----------
+
+// Estrelas espalhadas no hemisfério de cima.
 AFRAME.registerComponent('estrelas', {
-  schema: { quantidade: { default: 600 }, raio: { default: 80 } },
+  schema: { quantidade: { default: 800 }, raio: { default: 90 } },
   init: function () {
     const { quantidade, raio } = this.data;
     const posicoes = new Float32Array(quantidade * 3);
@@ -20,6 +55,8 @@ AFRAME.registerComponent('estrelas', {
   }
 });
 
+// ---------- Plataforma ----------
+
 // Chão quadriculado neon.
 AFRAME.registerComponent('grade-neon', {
   schema: { tamanho: { default: 10 }, divisoes: { default: 10 }, cor: { default: '#00ffff' } },
@@ -32,12 +69,98 @@ AFRAME.registerComponent('grade-neon', {
   }
 });
 
-// Mantém o jogador em cima da plataforma e fora do pedestal do qubit.
-// Fica no "rig" do jogador; empurra o rig de volta quando a câmera sai dos limites.
+// Plataforma completa: bloco escuro, grade de 1 m, borda neon e chão clicável.
+AFRAME.registerComponent('plataforma-neon', {
+  schema: { tamanho: { default: 10 }, cor: { default: '#00ffff' } },
+  init: function () {
+    const { tamanho: t, cor } = this.data;
+    const criar = (tag, attrs) => {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      this.el.appendChild(el);
+      return el;
+    };
+
+    criar('a-box', {
+      position: '0 -0.25 0', width: t, height: 0.5, depth: t,
+      material: 'color: #030712; roughness: 0.9'
+    });
+    criar('a-entity', { 'grade-neon': `tamanho: ${t}; divisoes: ${t}; cor: ${cor}`, position: '0 0.005 0' });
+
+    const borda = `color: ${cor}; emissive: ${cor}; emissiveIntensity: 1`;
+    const m = t / 2;
+    criar('a-box', { position: `0 0.01 ${m}`, width: t + 0.05, height: 0.04, depth: 0.05, material: borda });
+    criar('a-box', { position: `0 0.01 ${-m}`, width: t + 0.05, height: 0.04, depth: 0.05, material: borda });
+    criar('a-box', { position: `${m} 0.01 0`, width: 0.05, height: 0.04, depth: t + 0.05, material: borda });
+    criar('a-box', { position: `${-m} 0.01 0`, width: 0.05, height: 0.04, depth: t + 0.05, material: borda });
+
+    // Área clicável (invisível) para andar apontando.
+    criar('a-plane', {
+      class: 'chao', rotation: '-90 0 0', position: '0 0.01 0', width: t - 0.6, height: t - 0.6,
+      material: 'transparent: true; opacity: 0; depthWrite: false',
+      'andar-clicando': 'marcador: #marcador-destino'
+    });
+  }
+});
+
+// ---------- Jogador ----------
+
+// Move o rig do jogador: deslize suave no computador, teleporte instantâneo no VR.
+AFRAME.registerComponent('mover-jogador', {
+  schema: { duracao: { default: 400 } },
+  init: function () {
+    this.anim = null;
+    this.posCamera = new THREE.Vector3();
+  },
+
+  irPara: function (destino) {
+    const rig = this.el.object3D;
+    this.el.sceneEl.camera.getWorldPosition(this.posCamera);
+    const dx = destino.x - this.posCamera.x;
+    const dz = destino.z - this.posCamera.z;
+    if (this.el.sceneEl.is('vr-mode')) {
+      rig.position.x += dx;
+      rig.position.z += dz;
+      return;
+    }
+    this.anim = {
+      inicio: performance.now(),
+      de: rig.position.clone(),
+      para: new THREE.Vector3(rig.position.x + dx, rig.position.y, rig.position.z + dz)
+    };
+  },
+
+  // Coloca o jogador no ponto inicial de um mapa, olhando para frente (−z).
+  teleportarPara: function (x, z) {
+    this.anim = null;
+    this.el.object3D.position.set(x, 0, z);
+    const camEl = this.el.querySelector('[camera]');
+    if (camEl && !this.el.sceneEl.is('vr-mode')) {
+      camEl.object3D.position.x = 0;
+      camEl.object3D.position.z = 0;
+      const look = camEl.components['look-controls'];
+      if (look && look.yawObject) {
+        look.yawObject.rotation.y = 0;
+        look.pitchObject.rotation.x = 0;
+      }
+    }
+  },
+
+  tick: function () {
+    if (!this.anim) return;
+    const t = Math.min((performance.now() - this.anim.inicio) / this.data.duracao, 1);
+    const suave = t * t * (3 - 2 * t);
+    this.el.object3D.position.lerpVectors(this.anim.de, this.anim.para, suave);
+    if (t >= 1) this.anim = null;
+  }
+});
+
+// Mantém o jogador em cima da plataforma e fora do obstáculo central (pilar do qubit).
+// Os valores são trocados pelo gerenciador de mapas.
 AFRAME.registerComponent('limites-plataforma', {
   schema: {
     meiaLargura: { default: 4.6 },
-    raioObstaculo: { default: 0.55 }
+    raioObstaculo: { default: 0 }
   },
   init: function () {
     this.posCamera = new THREE.Vector3();
@@ -55,7 +178,6 @@ AFRAME.registerComponent('limites-plataforma', {
     if (p.z > meiaLargura) dz = meiaLargura - p.z;
     if (p.z < -meiaLargura) dz = -meiaLargura - p.z;
 
-    // Pedestal do qubit fica no centro (0, 0).
     const dist = Math.hypot(p.x, p.z);
     if (dist < raioObstaculo && dist > 0.0001) {
       const empurrar = raioObstaculo - dist;
@@ -70,84 +192,37 @@ AFRAME.registerComponent('limites-plataforma', {
   }
 });
 
-// Apontar e clicar no chão para andar até lá.
-// - Computador: clique no chão (arrastar para olhar em volta não conta como clique).
-// - Headset: aponte o laser do controle para o chão e aperte o gatilho.
-// Um anel ciano mostra onde o jogador vai parar.
+// ---------- Andar apontando ----------
+
+// Clique no chão (mouse ou laser do controle) para andar até lá.
+// Só age se este chão estiver ativo (com a classe 'chao').
 AFRAME.registerComponent('andar-clicando', {
-  schema: {
-    rig: { type: 'selector' },
-    marcador: { type: 'selector' },
-    duracao: { default: 400 } // ms do deslize no computador; no VR é instantâneo
-  },
+  schema: { marcador: { type: 'selector' } },
 
   init: function () {
     this.raios = new Set();
-    this.mouseDown = null;
-    this.mouseMoveu = false;
-    this.anim = null;
-    this.posCamera = new THREE.Vector3();
-
     this.el.addEventListener('raycaster-intersected', (e) => this.raios.add(e.detail.el));
     this.el.addEventListener('raycaster-intersected-cleared', (e) => this.raios.delete(e.detail.el));
-    this.el.addEventListener('click', (e) => this.aoClicar(e));
-
-    window.addEventListener('mousedown', (e) => {
-      this.mouseDown = { x: e.clientX, y: e.clientY };
-      this.mouseMoveu = false;
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (this.mouseDown && Math.hypot(e.clientX - this.mouseDown.x, e.clientY - this.mouseDown.y) > 6) {
-        this.mouseMoveu = true;
-      }
+    this.el.addEventListener('click', (e) => {
+      if (!this.ativo()) return;
+      const intersecao = e.detail && e.detail.intersection;
+      if (!intersecao || !QL.cliqueValido(e, this.el.sceneEl)) return;
+      QL.irPara(intersecao.point);
     });
   },
 
-  aoClicar: function (e) {
-    const cursor = e.detail && e.detail.cursorEl;
-    const intersecao = e.detail && e.detail.intersection;
-    if (!intersecao) return;
-    // No computador, ignora o "clique" que foi na verdade um arraste para olhar.
-    if (cursor === this.el.sceneEl && this.mouseMoveu) return;
-    this.irPara(intersecao.point);
-  },
-
-  irPara: function (destino) {
-    const rig = this.data.rig.object3D;
-    this.el.sceneEl.camera.getWorldPosition(this.posCamera);
-    const dx = destino.x - this.posCamera.x;
-    const dz = destino.z - this.posCamera.z;
-
-    if (this.el.sceneEl.is('vr-mode')) {
-      // Teleporte instantâneo: deslizar no VR costuma dar enjoo.
-      rig.position.x += dx;
-      rig.position.z += dz;
-      return;
-    }
-    this.anim = {
-      inicio: performance.now(),
-      de: rig.position.clone(),
-      para: new THREE.Vector3(rig.position.x + dx, rig.position.y, rig.position.z + dz)
-    };
+  ativo: function () {
+    return this.el.classList.contains('chao');
   },
 
   tick: function () {
-    // Deslize suave no computador.
-    if (this.anim) {
-      const t = Math.min((performance.now() - this.anim.inicio) / this.data.duracao, 1);
-      const suave = t * t * (3 - 2 * t);
-      this.data.rig.object3D.position.lerpVectors(this.anim.de, this.anim.para, suave);
-      if (t >= 1) this.anim = null;
-    }
-
-    // Marcador no ponto apontado.
     const marcador = this.data.marcador;
-    if (!marcador) return;
+    if (!marcador || !this.ativo()) return;
     let ponto = null;
     for (const raio of this.raios) {
       const comp = raio.components.raycaster;
       const intersecao = comp && comp.getIntersection(this.el);
-      // Só mostra se o chão for o primeiro objeto na mira (não o qubit).
+      // Só mostra se o chão for o primeiro objeto na mira (não um botão ou o qubit).
       if (intersecao && comp.intersections[0] === intersecao) { ponto = intersecao.point; break; }
     }
     marcador.object3D.visible = !!ponto;
@@ -155,15 +230,12 @@ AFRAME.registerComponent('andar-clicando', {
   }
 });
 
-// Andar sem controles (hand tracking): estique a mão apontando para o chão,
-// aparece um raio e o anel de destino; pince e solte para teleportar.
+// Mãos sem controles (hand tracking): estique o braço e aponte.
+// - Apontando para um botão: ele acende; pince e solte para clicar.
+// - Apontando para o chão: aparece o anel; pince e solte para teleportar.
 // O raio sai de um ponto perto do ombro e passa pela mão, como o ponteiro do Quest.
 AFRAME.registerComponent('andar-mao', {
-  schema: {
-    chao: { type: 'selector' },        // entidade com 'andar-clicando'
-    lado: { default: 1 },              // 1 = mão direita, -1 = esquerda
-    limite: { default: 4.6 }
-  },
+  schema: { lado: { default: 1 } }, // 1 = mão direita, -1 = esquerda
 
   init: function () {
     this.cabeca = new THREE.Vector3();
@@ -171,9 +243,12 @@ AFRAME.registerComponent('andar-mao', {
     this.mao = new THREE.Vector3();
     this.dir = new THREE.Vector3();
     this.direita = new THREE.Vector3();
+    this.quat = new THREE.Quaternion();
     this.matriz = new THREE.Matrix4();
-    this.alvo = null;
-    this.armado = false;
+    this.raycaster = new THREE.Raycaster();
+    this.alvo = null;      // ponto no chão
+    this.botao = null;     // botão na mira
+    this.armado = null;    // o que será acionado ao soltar a pinça
 
     const cena = this.el.sceneEl;
     this.marcador = document.createElement('a-ring');
@@ -193,24 +268,38 @@ AFRAME.registerComponent('andar-mao', {
     cena.object3D.add(this.raio);
 
     this.el.addEventListener('pinchstarted', () => {
+      const botao = this.botao;
+      const alvo = this.alvo && this.alvo.clone();
       // Espera o 'pinca-qubit' decidir se a pinça pegou o qubit.
       setTimeout(() => {
         const pinca = this.el.components['pinca-qubit'];
-        this.armado = !!this.alvo && !(pinca && pinca.pegouQubit);
+        if (pinca && pinca.pegouQubit) { this.armado = null; return; }
+        this.armado = botao ? { botao } : alvo ? { alvo } : null;
       }, 0);
     });
     this.el.addEventListener('pinchended', () => {
-      if (this.armado && this.alvo && this.data.chao) {
-        this.data.chao.components['andar-clicando'].irPara(this.alvo);
-      }
-      this.armado = false;
+      const a = this.armado;
+      this.armado = null;
+      if (!a) return;
+      if (a.botao) a.botao.emit('click', { cursorEl: this.el });
+      else if (a.alvo) QL.irPara(a.alvo);
     });
+  },
+
+  definirBotao: function (novo) {
+    if (novo === this.botao) return;
+    const comp = (el) => el && el.components['botao-neon'];
+    if (comp(this.botao)) comp(this.botao).hover(this.el, false);
+    if (comp(novo)) comp(novo).hover(this.el, true);
+    this.botao = novo;
   },
 
   tick: function () {
     const maos = this.el.components['hand-tracking-controls'];
     const camera = this.el.sceneEl.camera;
     this.alvo = null;
+    let novoBotao = null;
+    let pontoRaio = null;
 
     if (maos && maos.hasPoses && camera) {
       // Junta da base do dedo indicador (índice 6): estável mesmo pinçando.
@@ -218,7 +307,8 @@ AFRAME.registerComponent('andar-mao', {
       this.el.object3D.localToWorld(this.mao);
 
       camera.getWorldPosition(this.cabeca);
-      this.direita.set(1, 0, 0).applyQuaternion(camera.getWorldQuaternion(new THREE.Quaternion()));
+      camera.getWorldQuaternion(this.quat);
+      this.direita.set(1, 0, 0).applyQuaternion(this.quat);
       this.direita.y = 0;
       this.direita.normalize();
       this.ombro.copy(this.cabeca).addScaledVector(this.direita, 0.15 * this.data.lado);
@@ -228,27 +318,43 @@ AFRAME.registerComponent('andar-mao', {
       const bracoEsticado = this.dir.length() > 0.3;
       this.dir.normalize();
 
-      // Interseção do raio com o chão (y = 0).
-      if (bracoEsticado && this.dir.y < -0.1) {
-        const t = -this.mao.y / this.dir.y;
-        const x = this.mao.x + this.dir.x * t;
-        const z = this.mao.z + this.dir.z * t;
-        if (Math.abs(x) < this.data.limite && Math.abs(z) < this.data.limite && t < 12) {
-          this.alvo = new THREE.Vector3(x, 0, z);
+      if (bracoEsticado) {
+        // 1) Botões ativos na mira.
+        const malhas = [];
+        document.querySelectorAll('.botao').forEach((b) => {
+          const m = b.getObject3D('mesh');
+          if (m) malhas.push(m);
+        });
+        this.raycaster.set(this.mao, this.dir);
+        const hits = this.raycaster.intersectObjects(malhas, false);
+        if (hits.length) {
+          novoBotao = hits[0].object.el;
+          pontoRaio = hits[0].point;
+        } else if (this.dir.y < -0.1) {
+          // 2) Chão (y = 0), dentro dos limites do mapa atual.
+          const rig = document.querySelector('#jogador');
+          const limite = rig ? rig.components['limites-plataforma'].data.meiaLargura : 4.6;
+          const t = -this.mao.y / this.dir.y;
+          const x = this.mao.x + this.dir.x * t;
+          const z = this.mao.z + this.dir.z * t;
+          if (Math.abs(x) < limite && Math.abs(z) < limite && t < 30) {
+            this.alvo = new THREE.Vector3(x, 0, z);
+            pontoRaio = this.alvo;
+          }
         }
       }
     }
 
-    const ativo = !!this.alvo;
-    this.marcador.object3D.visible = ativo;
-    this.raio.visible = ativo;
-    if (ativo) {
-      this.marcador.object3D.position.set(this.alvo.x, 0.02, this.alvo.z);
+    this.definirBotao(novoBotao);
+
+    this.marcador.object3D.visible = !!this.alvo;
+    this.raio.visible = !!pontoRaio;
+    if (this.alvo) this.marcador.object3D.position.set(this.alvo.x, 0.02, this.alvo.z);
+    if (pontoRaio) {
       const pos = this.raio.geometry.attributes.position;
       pos.setXYZ(0, this.mao.x, this.mao.y, this.mao.z);
-      pos.setXYZ(1, this.alvo.x, 0.02, this.alvo.z);
+      pos.setXYZ(1, pontoRaio.x, Math.max(pontoRaio.y, 0.02), pontoRaio.z);
       pos.needsUpdate = true;
-      this.marcador.setAttribute('material', 'opacity', this.armado ? 1 : 0.6);
     }
   }
 });
