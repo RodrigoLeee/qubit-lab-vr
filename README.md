@@ -28,6 +28,8 @@ O jogo começa em um menu neon com **três modos**:
 - [Documentação do projeto](docs/projeto.md)
 - [Ficha técnica da experiência imersiva](docs/ficha_tecnica.md)
 - [Registro diário (log)](docs/registro_log.md)
+- [Plano de testes](docs/testes.md)
+- [Diretrizes de assets](docs/assets.md)
 
 ## Estrutura de pastas
 
@@ -36,6 +38,8 @@ O jogo começa em um menu neon com **três modos**:
   | projeto.md
   | ficha_tecnica.md
   | registro_log.md
+  | testes.md
+  | assets.md
   |--> imagens
 |--> jogo
   | index.html
