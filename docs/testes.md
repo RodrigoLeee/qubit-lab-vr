@@ -63,10 +63,64 @@ No modo Qubit, completar **5 desafios** de "encontre o estado" (estados da base 
 
 **Decisão:** registrada após a análise dos resultados.
 
+## Teste 2 — Entradas de mirar e confirmar
+
+### Pergunta
+
+Qual entrada é mais precisa, confortável e divertida para mirar e confirmar: olhar com tempo, aceno de cabeça (a interação sem mãos do projeto), controle ou barra de espaço no PC?
+
+### Hipótese
+
+O **controle** é o mais preciso, por ser familiar, mas usa as mãos. Entre as entradas sem mãos, o **aceno de cabeça** é mais rápido que o **olhar com tempo**, porque não depende de esperar 1,5 s, mas pode ser menos preciso, já que a cabeça se move durante o gesto.
+
+### Variantes
+
+| Entrada | Mirar | Confirmar |
+|---|---|---|
+| Olhar com tempo | Cabeça | Olhar 1,5 s |
+| Aceno de cabeça | Cabeça | Baixar e voltar a cabeça |
+| Controle | Raio do controle | Gatilho |
+| PC | Direção da câmera | Barra de espaço |
+
+### Tarefa
+
+Na página [`jogo/testes.html`](../jogo/testes.html):
+
+1. **Botões:** na demonstração de emaranhamento, acionar *Medir*, *O que está acontecendo?* e *Reiniciar*.
+2. **Desafio da bolinha:** fazer 5 lançamentos no alvo com cada entrada.
+3. **Lousa:** ligar a caneta, desenhar um círculo com a cabeça e desligar a caneta.
+
+### Métricas
+
+**Objetivas** (exibidas na própria cena, sem gravar dados pessoais)
+- Tempo entre começar a mirar e confirmar, por entrada (placa de registro).
+- Acertos por lançamento, por entrada (placar do desafio).
+- Acionamentos sem querer, anotados pelo observador.
+
+**Subjetivas** (escala de 1 a 5, ao fim de cada entrada)
+- Precisão percebida.
+- Conforto (pescoço, olhos, enjoo).
+- Diversão.
+- Preferência entre as entradas, com comentário livre.
+
+### Procedimento
+
+1. Ambientação de 2 minutos na página de testes.
+2. Cada participante usa todas as entradas disponíveis no dispositivo, em ordem alternada entre os participantes.
+3. Questionário após cada entrada e entrevista curta ao final.
+
+### Resultados e decisão
+
+| Participante | Entrada | Tempo médio até confirmar | Acertos / lançamentos | Precisão | Conforto | Diversão |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+**Decisão:** registrada após a análise dos resultados.
+
 ## Próximos testes
 
 | Teste | Pergunta |
 |---|---|
-| 2 — Texto × representação visual | A explicação dos fenômenos deve ser em texto no painel ou apenas visual na cena? |
-| 3 — Formas geométricas × assets | Peças modeladas (assets) tornam as portas do modo Circuit mais fáceis de reconhecer e encaixar do que formas simples? |
-| 4 — Teleporte × deslocamento contínuo | Qual forma de deslocamento é mais confortável na plataforma? |
+| 3 — Texto × representação visual | A explicação dos fenômenos deve ser em texto no painel ou apenas visual na cena? |
+| 4 — Formas geométricas × assets | Peças modeladas (assets) tornam as portas do modo Circuit mais fáceis de reconhecer e encaixar do que formas simples? |
+| 5 — Teleporte × deslocamento contínuo | Qual forma de deslocamento é mais confortável na plataforma? |
