@@ -235,7 +235,11 @@ AFRAME.registerComponent('andar-clicando', {
 // - Apontando para o chão: aparece o anel; pince e solte para teleportar.
 // O raio sai de um ponto perto do ombro e passa pela mão, como o ponteiro do Quest.
 AFRAME.registerComponent('andar-mao', {
-  schema: { lado: { default: 1 } }, // 1 = mão direita, -1 = esquerda
+  schema: {
+    lado: { default: 1 },               // 1 = mão direita, -1 = esquerda
+    laserSempre: { default: false },    // mostra o laser mesmo sem alvo (braço esticado)
+    alcanceLaser: { default: 3 }
+  },
 
   init: function () {
     this.cabeca = new THREE.Vector3();
@@ -341,6 +345,10 @@ AFRAME.registerComponent('andar-mao', {
             this.alvo = new THREE.Vector3(x, 0, z);
             pontoRaio = this.alvo;
           }
+        }
+        // Laser contínuo: sem alvo, o raio segue até o alcance máximo.
+        if (!pontoRaio && this.data.laserSempre) {
+          pontoRaio = this.mao.clone().addScaledVector(this.dir, this.data.alcanceLaser);
         }
       }
     }
