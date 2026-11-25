@@ -47,7 +47,7 @@ O jogo usa duas fontes de objetos 3D:
 
 ```html
 <a-assets>
-  <a-asset-item id="bancada" src="assets/modelos/bancada.glb"></a-asset-item>
+  <a-asset-item id="bancada" src="assets/models/bancada.glb"></a-asset-item>
 </a-assets>
 
 <a-entity gltf-model="#bancada" position="0 0 -2"></a-entity>
@@ -60,9 +60,9 @@ assets-fonte/              arquivos de trabalho (não carregados pelo jogo)
   blender/                 .blend de cada modelo
 jogo/
   assets/
-    modelos/               .glb exportados do Blender
-    texturas/              .png / .jpg / .ktx2
-    sons/                  .ogg / .mp3
+    models/                .glb exportados do Blender
+    textures/              .png / .jpg / .ktx2
+    audio/                 .ogg / .mp3
 ```
 
 - **`assets-fonte/`** guarda os arquivos editáveis; **`jogo/assets/`** guarda apenas o que o jogo carrega.

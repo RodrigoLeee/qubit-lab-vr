@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Qubit Lab VR — Testes de interação</title>
+    <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+    <script src="js/ambiente.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/testes.js"></script>
+  </head>
+  <body>
+    <!--
+      Página de testes de interação (mirar e confirmar).
+      - Olhar, sem mãos (padrão): mire com a cabeça e confirme olhando 1,5 s (o anel enche).
+      - Controle: laser + gatilho; ao conectar um controle, o olhar é desligado.
+      - Aceno de cabeça (ideia sem mãos do grupo): mire com o olhar e confirme baixando e
+        voltando a cabeça; no lançamento, a amplitude do aceno vira força.
+      - PC: clique do mouse, ou barra de espaço para confirmar o que o anel do olhar mira.
+      Deslocamento: pontos de teleporte (colunas de luz no chão).
+      Estações: demonstração de emaranhamento (frente), desafio da bolinha (direita)
+      e lousa desenhada com a cabeça (esquerda).
+    -->
+    <a-scene renderer="antialias: true"
+             fog="type: exponential; color: #020818; density: 0.015"
+             cursor="rayOrigin: mouse"
+             raycaster="objects: .botao, .ponto-teleporte, .alvo"
+             entradas-teste="olhar: #olhar"
+             registro-interacao="placa: #placa-registro">
+
+      <!-- Céu e luz -->
+      <a-sky color="#071640" material="fog: false"></a-sky>
+      <a-entity estrelas></a-entity>
+      <a-entity light="type: ambient; color: #3a4a80; intensity: 0.6"></a-entity>
+      <a-entity light="type: point; color: #00ffff; intensity: 1.2; distance: 12" position="0 0.5 0"></a-entity>
+      <a-ring id="marcador-destino" visible="false" radius-inner="0.14" radius-outer="0.2" rotation="-90 0 0"
+              material="color: #00ffff; shader: flat; side: double"></a-ring>
+
+      <!-- Plataforma do modo Quântico (40 × 40 m) -->
+      <a-entity plataforma-neon="tamanho: 40"></a-entity>
+
+      <!-- Demonstração: dois elétrons emaranhados -->
+      <a-entity demo-emaranhamento="painel: #painel-explicacao; distancia: 1.8" position="0 1.75 -2.2"></a-entity>
+
+      <!-- Botões (mirar e confirmar) -->
+      <a-entity class="botao" position="-1.25 1.0 -1.6"
+                botao-neon="texto: Medir; subtexto: Colapsar os spins; largura: 1.0; altura: 0.42; acao: medir"></a-entity>
+      <a-entity class="botao" position="0 1.0 -1.6"
+                botao-neon="texto: O que está acontecendo?; subtexto: Abrir ou fechar a explicação; largura: 1.2; altura: 0.42; acao: explicar"></a-entity>
+      <a-entity class="botao" position="1.25 1.0 -1.6"
+                botao-neon="texto: Reiniciar; subtexto: Emaranhar de novo; largura: 1.0; altura: 0.42; acao: reiniciar"></a-entity>
+
+      <!-- Explicação (abre pelo botão do meio) -->
+      <a-entity id="painel-explicacao" painel-texto="largura: 1.7; altura: 1.15"
+                position="2.55 1.65 -1.3" rotation="0 -35 0"></a-entity>
+
+      <!-- Registro do teste: entrada atual e tempo até confirmar -->
+      <a-entity id="placa-registro" position="-2.6 2.2 -1.6" rotation="0 30 0"
+                botao-neon="texto: Entrada: Olhar; subtexto: Última: —; largura: 1.6; altura: 0.45; tamanhoTexto: 0.34"></a-entity>
+
+
+      <!-- Boas-vindas -->
+      <a-entity position="0 2.75 -2.4"
+                botao-neon="texto: Testes de interação; subtexto: Mire com a cabeça · confirme olhando 1,5 s, acenando ou com a barra de espaço; largura: 2.8; altura: 0.5; tamanhoTexto: 0.34"></a-entity>
+
+      <!-- Estação: desafio da bolinha (vá pelo ponto de teleporte da direita) -->
+      <a-box class="alvo" alvo-lancamento="velocidade: 8; placar: #placar-desafio"
+             position="6 1.6 -11" width="1" height="1" depth="1"
+             material="color: #2EF2F2; emissive: #2EF2F2; emissiveIntensity: 0.35; opacity: 0.85; transparent: true"></a-box>
+      <a-entity id="placar-desafio" position="6 2.65 -11"
+                botao-neon="texto: Desafio: acerte o alvo; subtexto: —; largura: 2.6; altura: 0.5; tamanhoTexto: 0.34"></a-entity>
+
+      <!-- Estação: lousa desenhada com a cabeça (vá pelo ponto de teleporte da esquerda) -->
+      <a-entity quadro-olhar="largura: 1.6; altura: 1; botao: #botao-caneta" position="-6 1.6 -9"></a-entity>
+      <a-entity position="-6 2.4 -9"
+                botao-neon="texto: Lousa: desenhe com a cabeça; largura: 1.8; altura: 0.34; tamanhoTexto: 0.4"></a-entity>
+      <a-entity id="botao-caneta" class="botao" position="-4.55 1.75 -8.8" rotation="0 -20 0"
+                botao-neon="texto: Caneta: desligada; subtexto: Olhe para ligar e desenhe com a cabeça; largura: 1.0; altura: 0.4; acao: caneta"></a-entity>
+      <a-entity class="botao" position="-4.55 1.2 -8.8" rotation="0 -20 0"
+                botao-neon="texto: Limpar; subtexto: Apagar a lousa; largura: 1.0; altura: 0.4; acao: limpar"></a-entity>
+
+      <!-- Pontos de teleporte -->
+      <a-entity ponto-teleporte position="0 0 3"></a-entity>
+      <a-entity ponto-teleporte position="-3.5 0 0.5"></a-entity>
+      <a-entity ponto-teleporte position="3.5 0 0.5"></a-entity>
+      <a-entity ponto-teleporte position="0 0 -6"></a-entity>
+      <a-entity ponto-teleporte position="-6 0 -6"></a-entity>
+      <a-entity ponto-teleporte position="6 0 -6"></a-entity>
+
+      <!-- Voltar ao jogo (no chão) -->
+      <a-entity class="botao" position="-1.4 0.03 1.4" rotation="-90 0 0"
+                botao-neon="texto: JOGO; largura: 1.0; altura: 0.4; tamanhoTexto: 0.5; acao: url:index.html"></a-entity>
+
+      <!-- Jogador -->
+      <a-entity id="jogador" position="0 0 3" limites-plataforma="meiaLargura: 19.6" mover-jogador>
+        <a-entity camera position="0 1.6 0" look-controls="pointerLockEnabled: false" wasd-controls="acceleration: 25"
+                  aceno-cabeca="limiar: 10; janela: 700">
+          <!-- Olhar (sem mãos): anel a 1 m dos olhos; confirma após 1,5 s -->
+          <a-entity id="olhar" position="0 0 -1"
+                    cursor="fuse: true; fuseTimeout: 1500"
+                    raycaster="objects: .botao, .ponto-teleporte, .alvo"
+                    geometry="primitive: ring; radiusInner: 0.012; radiusOuter: 0.02"
+                    material="color: #E6FBFF; shader: flat; opacity: 0.9; transparent: true"
+                    anel-fuse="tempo: 1500; progresso: #olhar-progresso"></a-entity>
+          <a-entity id="olhar-progresso" position="0 0 -0.999" visible="false"
+                    geometry="primitive: ring; radiusInner: 0.022; radiusOuter: 0.032; thetaStart: 90; thetaLength: 1"
+                    material="color: #FF6BF2; shader: flat; side: double"></a-entity>
+        </a-entity>
+        <!-- Controle: laser + gatilho -->
+        <a-entity laser-controls="hand: right" raycaster="objects: .botao, .ponto-teleporte, .alvo; lineColor: #00ffff"></a-entity>
+        <a-entity laser-controls="hand: left" raycaster="objects: .botao, .ponto-teleporte, .alvo; lineColor: #00ffff"></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

@@ -30,6 +30,9 @@ O jogo começa em um menu neon com **três modos**:
 - [Registro diário (log)](docs/registro_log.md)
 - [Plano de testes](docs/testes.md)
 - [Diretrizes de assets](docs/assets.md)
+- [Interação: mirar e confirmar](docs/interacao.md)
+- [Moodboard](docs/moodboard.md)
+- Página de testes de interação: `jogo/testes.html`
 
 ## Estrutura de pastas
 
@@ -40,9 +43,12 @@ O jogo começa em um menu neon com **três modos**:
   | registro_log.md
   | testes.md
   | assets.md
+  | interacao.md
+  | moodboard.md
   |--> imagens
 |--> jogo
   | index.html
+  | testes.html
   |--> js
 |--> 01-aframe-minimo
 |--> 02-caddy-local

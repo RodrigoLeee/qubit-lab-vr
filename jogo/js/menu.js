@@ -44,6 +44,13 @@
       this.el.addEventListener('click', (e) => this.aoClicar(e));
     },
 
+    // Redesenha quando o texto muda (por exemplo, placas atualizadas por código).
+    update: function (antigo) {
+      if (this.ctx && antigo && (antigo.texto !== this.data.texto || antigo.subtexto !== this.data.subtexto)) {
+        this.desenhar(this.fontes.size > 0);
+      }
+    },
+
     hover: function (fonte, ativo) {
       if (ativo) this.fontes.add(fonte || 'cursor');
       else this.fontes.delete(fonte || 'cursor');
@@ -54,10 +61,15 @@
       if (!this.el.classList.contains('botao')) return;
       if (!QL.cliqueValido(e, this.el.sceneEl)) return;
       const acao = this.data.acao;
+      this.fontes.clear();
+      this.desenhar(false);
       if (acao.startsWith('mapa:')) {
-        this.fontes.clear();
-        this.desenhar(false);
         this.el.sceneEl.components.mapas.ir(acao.slice(5));
+      } else if (acao.startsWith('url:')) {
+        window.location.href = acao.slice(4);
+      } else if (acao) {
+        // Outras ações são tratadas por quem escuta o evento na cena.
+        this.el.sceneEl.emit('botao-acao', { acao, botao: this.el });
       }
     },
 
