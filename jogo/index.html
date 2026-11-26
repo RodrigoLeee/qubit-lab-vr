@@ -7,6 +7,7 @@
     <script src="js/ambiente.js"></script>
     <script src="js/qubit.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/fenomenos.js"></script>
   </head>
   <body>
     <a-scene renderer="antialias: true"
@@ -47,8 +48,55 @@
       <!-- ===== Mapa: Quântico (plataforma grande) ===== -->
       <a-entity mapa="nome: quantico; tamanho: 40; inicioZ: 3">
         <a-entity plataforma-neon="tamanho: 40"></a-entity>
-        <a-entity botao-neon="texto: QUÂNTICO; subtexto: Fenômenos quânticos — em construção; largura: 3.4; altura: 1.1; tamanhoTexto: 0.4"
-                  position="0 2.4 -3"></a-entity>
+        <a-entity botao-neon="texto: QUÂNTICO; subtexto: Superposição · Medição · Emaranhamento; largura: 3.4; altura: 0.8; tamanhoTexto: 0.45"
+                  position="0 4.6 -9"></a-entity>
+
+
+        <!-- Estação 1: superposição (à esquerda) -->
+        <a-entity position="-5 0 -3.5" rotation="0 35 0">
+          <a-entity position="0 2.55 0"
+                    botao-neon="texto: 1. Superposição; largura: 1.9; altura: 0.36; tamanhoTexto: 0.5"></a-entity>
+          <a-entity id="placa-sup" position="0 0.62 0.5"
+                    botao-neon="texto: —; subtexto: —; largura: 1.6; altura: 0.34; tamanhoTexto: 0.32"></a-entity>
+          <a-entity estacao-superposicao="painel: #painel-sup; placa: #placa-sup; prefixo: sup-" position="0 1.7 0"></a-entity>
+          <a-entity class="botao" position="-0.55 1.0 0.5"
+                    botao-neon="texto: Mudar estado; largura: 1.0; altura: 0.36; acao: sup-mudar"></a-entity>
+          <a-entity class="botao" position="0.55 1.0 0.5"
+                    botao-neon="texto: Explicar; largura: 1.0; altura: 0.36; acao: sup-explicar"></a-entity>
+          <a-entity id="painel-sup" painel-texto="largura: 1.7; altura: 1.15" position="0 3.35 0"></a-entity>
+        </a-entity>
+
+        <!-- Estação 2: medição (ao centro) -->
+        <a-entity position="0 0 -5.5">
+          <a-entity position="0 2.55 0"
+                    botao-neon="texto: 2. Medição; largura: 1.9; altura: 0.36; tamanhoTexto: 0.5"></a-entity>
+          <a-entity id="placa-med" position="0 0.62 0.5"
+                    botao-neon="texto: —; subtexto: —; largura: 1.9; altura: 0.34; tamanhoTexto: 0.32"></a-entity>
+          <a-entity estacao-medicao="painel: #painel-med; placa: #placa-med; prefixo: med-; pCima: 0.7" position="-0.45 1.7 0"></a-entity>
+          <a-entity class="botao" position="-1.2 1.0 0.5"
+                    botao-neon="texto: Medir; largura: 0.75; altura: 0.34; acao: med-medir"></a-entity>
+          <a-entity class="botao" position="-0.4 1.0 0.5"
+                    botao-neon="texto: Medir 20×; largura: 0.75; altura: 0.34; acao: med-repetir"></a-entity>
+          <a-entity class="botao" position="0.4 1.0 0.5"
+                    botao-neon="texto: Preparar; largura: 0.75; altura: 0.34; acao: med-preparar"></a-entity>
+          <a-entity class="botao" position="1.2 1.0 0.5"
+                    botao-neon="texto: Explicar; largura: 0.75; altura: 0.34; acao: med-explicar"></a-entity>
+          <a-entity id="painel-med" painel-texto="largura: 1.7; altura: 1.15" position="0 3.35 0"></a-entity>
+        </a-entity>
+
+        <!-- Estação 3: emaranhamento (à direita) -->
+        <a-entity position="5 0 -3.5" rotation="0 -35 0">
+          <a-entity position="0 2.55 0"
+                    botao-neon="texto: 3. Emaranhamento; largura: 1.9; altura: 0.36; tamanhoTexto: 0.5"></a-entity>
+          <a-entity demo-emaranhamento="painel: #painel-ema; distancia: 1.6; prefixo: ema-" position="0 1.75 0"></a-entity>
+          <a-entity class="botao" position="-1.05 0.95 0.5"
+                    botao-neon="texto: Medir; largura: 0.95; altura: 0.36; acao: ema-medir"></a-entity>
+          <a-entity class="botao" position="0 0.95 0.5"
+                    botao-neon="texto: Explicar; largura: 0.95; altura: 0.36; acao: ema-explicar"></a-entity>
+          <a-entity class="botao" position="1.05 0.95 0.5"
+                    botao-neon="texto: Reiniciar; largura: 0.95; altura: 0.36; acao: ema-reiniciar"></a-entity>
+          <a-entity id="painel-ema" painel-texto="largura: 1.7; altura: 1.15" position="0 3.35 0"></a-entity>
+        </a-entity>
         <a-entity class="botao" position="-1.2 0.03 0.8" rotation="-90 0 0"
                   botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
       </a-entity>

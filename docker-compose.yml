@@ -1,0 +1,16 @@
+services:
+  qubit-lab:
+    build: .
+    image: qubit-lab-caddy
+    ports:
+      - "8080:8080"   # HTTP  (redireciona para HTTPS)
+      - "8443:8443"   # HTTPS
+    volumes:
+      # Desenvolvimento: monta a pasta jogo/ por cima da cópia que está na
+      # imagem, para que as edições no jogo apareçam sem refazer o build.
+      # Remova esta linha para testar a imagem exatamente como será publicada.
+      - ./jogo:/srv:ro
+      - caddy_data:/data   # guarda a CA local entre execuções
+
+volumes:
+  caddy_data:

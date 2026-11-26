@@ -1,0 +1,41 @@
+# Publica a pasta jogo/ no GitHub Pages a cada push na branch main
+# (o fluxo é develop → merge na main → publicação).
+# Endereço: https://rodrigoleee.github.io/qubit-lab-vr/
+name: Publicar jogo no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Só uma publicação por vez; a mais nova substitui a anterior.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar o Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar a pasta do jogo
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: jogo
+
+      - name: Publicar
+        id: publicacao
+        uses: actions/deploy-pages@v4

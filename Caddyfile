@@ -1,0 +1,23 @@
+{
+	# Portas usadas DENTRO do contêiner. São as mesmas publicadas no
+	# docker-compose.yml, assim o redirecionamento HTTP -> HTTPS acerta a porta.
+	http_port 8080
+	https_port 8443
+
+	# O Caddy não consegue instalar o certificado no sistema de dentro do
+	# contêiner; a instalação na sua máquina é feita à mão (ver README do exemplo 04).
+	skip_install_trust
+}
+
+# Usar um nome (localhost) faz o Caddy ativar o HTTPS automaticamente,
+# com um certificado emitido pela CA local dele.
+# Para acessar de outro dispositivo, siga a seção "Acessando de outro
+# dispositivo (headset)" do README do exemplo 04, usando o IP da sua máquina.
+localhost {
+	root * /srv
+	file_server
+
+	# Obriga o navegador a revalidar os arquivos a cada acesso:
+	# editou o jogo, recarregou a página, viu a mudança.
+	header Cache-Control "no-cache"
+}
