@@ -11,13 +11,13 @@
 
 ## Descrição
 
-O **Qubit Lab VR** é uma experiência em **realidade virtual** para aprender computação quântica por imersão. Em vez de fórmulas e diagramas numa tela, o usuário entra em um ambiente neon em escala atômica, vê os fenômenos quânticos acontecendo ao seu redor e interage com qubits com as próprias mãos, no Meta Quest 3 ou no navegador do computador.
+O **Qubit Lab VR** é uma experiência em **realidade virtual** para aprender computação quântica por imersão. Em vez de fórmulas e diagramas numa tela, o usuário entra em salas neon, vê os fenômenos quânticos acontecendo ao seu redor e interage com qubits usando os controles do Meta Quest 3, ou o mouse no navegador do computador.
 
 O jogo começa em um menu neon com **três modos**:
 
 | Modo | Nome | Objetivo | Status |
 |---|---|---|---|
-| 1 | **Quântico** | Visualizar fenômenos quânticos (superposição, emaranhamento, medição) | Em desenvolvimento |
+| 1 | **Quântico** | Estações de superposição, medição e emaranhamento | Funcional |
 | 2 | **Qubit** | Girar um qubit na esfera de Bloch e encontrar estados, com o ciclo trigonométrico no equador | Funcional |
 | 3 | **Circuit** | Montar circuitos quânticos com portas (H, X, Z, CNOT…) | Em desenvolvimento |
 
@@ -32,6 +32,7 @@ O jogo começa em um menu neon com **três modos**:
 - [Diretrizes de assets](docs/assets.md)
 - [Interação: mirar e confirmar](docs/interacao.md)
 - [Moodboard](docs/moodboard.md)
+- [Mapa de interação](docs/mapa_interacao.md)
 - Página de testes de interação: `jogo/testes.html`
 
 ## Estrutura de pastas
@@ -45,6 +46,7 @@ O jogo começa em um menu neon com **três modos**:
   | assets.md
   | interacao.md
   | moodboard.md
+  | mapa_interacao.md
   |--> imagens
 |--> jogo
   | index.html
@@ -65,6 +67,14 @@ Dentre os arquivos e pastas presentes na raiz do projeto, definem-se:
 - **jogo:** código-fonte da experiência em A-Frame (`index.html` monta a cena; `js/` tem os componentes de ambiente, qubit e menu).
 - **01 a 04:** exemplos do template de origem, do A-Frame mínimo até o A-Frame servido pelo Caddy em Docker com HTTPS.
 
+## Jogar
+
+O jogo é publicado no GitHub Pages a cada merge na `main`:
+
+**https://rodrigoleee.github.io/qubit-lab-vr/**
+
+No Meta Quest 3, abra o endereço no navegador, toque em **VR** e use os controles: aponte o laser e aperte o gatilho. Para sair, use o botão **SAIR DO VR** no chão de cada sala.
+
 ## Configuração para desenvolvimento
 
 Instale o git e clone este repositório:
@@ -81,7 +91,13 @@ python -m http.server 8001 --directory jogo
 
 Acesse http://localhost:8001.
 
-**No headset (Meta Quest 3)**, o WebXR exige HTTPS. Use o Caddy em Docker do exemplo [`04-aframe-caddy-docker`](04-aframe-caddy-docker), copiando o conteúdo de `jogo/` para a pasta `site/`, e acesse pelo IP do computador na rede (passo a passo no README do exemplo 04).
+**Com HTTPS local** (Caddy em Docker, no padrão do exemplo [`04-aframe-caddy-docker`](04-aframe-caddy-docker)), na raiz do projeto:
+
+```bash
+docker compose up --build
+```
+
+Acesse https://localhost:8443. Para abrir no headset pela rede local, siga a seção "Acessando de outro dispositivo (headset)" do README do exemplo 04.
 
 ### Tecnologias
 
@@ -90,6 +106,13 @@ Acesse http://localhost:8001.
 - [Caddy](https://caddyserver.com) e Docker para servir com HTTPS
 
 ## Histórico de lançamentos
+
+* 0.4.0 - 26/11/2026
+    * Modo Quântico com as estações de superposição, medição e emaranhamento
+    * Página de testes de interação e testes no Meta Quest 3
+    * Controle como interação principal, a partir dos testes; interação por pinça removida
+    * Vibração ao confirmar e botão SAIR DO VR em cada sala
+    * Publicação no GitHub Pages
 
 * 0.3.0 - 18/11/2026
     * Menu neon com os modos Quântico, Qubit e Circuit
