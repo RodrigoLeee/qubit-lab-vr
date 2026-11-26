@@ -1,0 +1,4 @@
+# Só o Caddyfile e a pasta jogo/ entram na imagem.
+*
+!Caddyfile
+!jogo/
