@@ -1,20 +1,36 @@
 # Interação — Qubit Lab VR
 
-Como o usuário mira e confirma no Qubit Lab VR, com e sem controle, e qual é a interação sem mãos do projeto.
+Como o usuário mira e confirma no Qubit Lab VR. Desde 26/11/2026, a **interação principal é o controle do Meta Quest 3**, decisão tomada a partir dos testes de interação (ver [`testes.md`](testes.md), Teste 2).
 
 ## 1. Mirar e confirmar
 
 Toda interação tem duas partes: **mirar** diz "o quê" e **confirmar** diz "agora".
 
-| Entrada | Mirar | Confirmar | Usa as mãos? |
+| Entrada | Mirar | Confirmar | Onde está |
 |---|---|---|---|
-| Olhar com tempo | Direção da cabeça (anel a 1 m dos olhos) | Olhar o alvo por 1,5 s; o anel magenta enche durante a espera | Não |
-| **Aceno de cabeça** (interação sem mãos do projeto) | Direção da cabeça | Baixar e voltar a cabeça rapidamente | Não |
-| Controle do Quest | Raio do controle (`laser-controls`) | Gatilho | Sim |
-| Mãos (hand tracking) | Raio estimado do ombro pela mão | Pinça | Sim |
-| PC | Mouse ou direção da câmera | Clique ou barra de espaço | Não se aplica |
+| **Controle do Quest** (principal) | Raio do controle (`laser-controls`) | Gatilho, com vibração ao confirmar | Jogo e página de testes |
+| Olhar com tempo | Direção da cabeça (anel a 1 m dos olhos) | Olhar o alvo por 1,5 s; o anel magenta enche durante a espera | Página de testes |
+| Aceno de cabeça (alternativa sem mãos) | Direção da cabeça | Baixar e voltar a cabeça rapidamente | Página de testes |
+| PC | Mouse ou direção da câmera | Clique ou barra de espaço | Jogo e página de testes |
+| Mãos (pinça) | Raio estimado do ombro pela mão | Pinça | Removida em 26/11/2026 |
 
-## 2. Interação sem mãos do projeto: aceno de cabeça
+## Decisão: controle como interação principal
+
+**Origem:** a rodada de testes no Meta Quest 3 (26/11/2026) comparou controle, mãos (pinça) e olhar com tempo.
+
+- **Mãos (pinça):** o mesmo gesto servia para clicar e para teleportar, e ao tentar acionar um botão o jogador era teleportado. Um gesto com duas funções não deixa o sistema separar a intenção.
+- **Olhar com tempo:** confiável, mas a espera de 1,5 s a cada confirmação deixa a experiência lenta.
+- **Controle:** separa mirar (o raio) de confirmar (o gatilho) e cada função tem seu botão. Funcionou bem em todas as salas.
+
+**Fundamento:** pela relação de **incorporação** (Ihde), uma técnica bem ajustada se junta ao corpo e recua da atenção; e pelo **hábito motor** (Merleau-Ponty), apertar um gatilho é um saber que o corpo já tem. O controle deixa de ser objeto de atenção e o foco fica nos fenômenos quânticos.
+
+**Consequências no projeto**
+- O rastreamento de mãos foi removido do jogo.
+- Toda confirmação com o controle gera uma vibração curta (retorno tátil).
+- Cada sala ganhou o botão **SAIR DO VR** no chão, ao lado do **MENU**.
+- O olhar com tempo e o aceno de cabeça seguem na página de testes como alternativa sem mãos.
+
+## 2. Alternativa sem mãos: aceno de cabeça
 
 - **Mirar:** o olhar, o mesmo anel do cursor com tempo.
 - **Confirmar:** um aceno, ou seja, a cabeça desce pelo menos 10° e volta em até 0,7 s.
@@ -45,6 +61,8 @@ O jogo sempre começa no olhar, que funciona no Quest, no celular e no PC, e só
 | Área clicável dos pontos de teleporte | Até 1 m de altura | Exige olhar para baixo; olhar o horizonte não teleporta |
 | Chão clicável pelo olhar | Não | Olhar em volta não pode mover o jogador |
 | Deslocamento sem mãos | Pontos de teleporte | Teleporte instantâneo no VR, para evitar enjoo |
+| Interação principal | Controle (laser + gatilho) | Resultado dos testes: mira estável, confirmação clara e funções separadas por botão |
+| Retorno tátil | Vibração de 50 ms ao confirmar | Confirma a ação sem depender da visão |
 
 ## 5. Página de testes
 
