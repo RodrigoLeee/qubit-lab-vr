@@ -61,10 +61,13 @@
       if (!this.el.classList.contains('botao')) return;
       if (!QL.cliqueValido(e, this.el.sceneEl)) return;
       const acao = this.data.acao;
+      QL.vibrar(e.detail && e.detail.cursorEl);
       this.fontes.clear();
       this.desenhar(false);
       if (acao.startsWith('mapa:')) {
         this.el.sceneEl.components.mapas.ir(acao.slice(5));
+      } else if (acao === 'sair-vr') {
+        if (this.el.sceneEl.is('vr-mode')) this.el.sceneEl.exitVR();
       } else if (acao.startsWith('url:')) {
         window.location.href = acao.slice(4);
       } else if (acao) {

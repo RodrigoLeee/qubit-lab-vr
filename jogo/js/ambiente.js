@@ -27,6 +27,14 @@ QL.visivel = function (obj) {
   return true;
 };
 
+// Vibração curta no controle que confirmou a ação (retorno tátil).
+QL.vibrar = function (cursorEl, intensidade, duracao) {
+  const tc = cursorEl && cursorEl.components && cursorEl.components['tracked-controls'];
+  const gamepad = tc && tc.controller && tc.controller.gamepad;
+  const motor = gamepad && gamepad.hapticActuators && gamepad.hapticActuators[0];
+  if (motor && motor.pulse) motor.pulse(intensidade || 0.4, duracao || 50);
+};
+
 // Leva o jogador até um ponto do chão.
 QL.irPara = function (destino) {
   const rig = document.querySelector('#jogador');
@@ -207,6 +215,7 @@ AFRAME.registerComponent('andar-clicando', {
       if (!this.ativo()) return;
       const intersecao = e.detail && e.detail.intersection;
       if (!intersecao || !QL.cliqueValido(e, this.el.sceneEl)) return;
+      QL.vibrar(e.detail.cursorEl);
       QL.irPara(intersecao.point);
     });
   },
@@ -227,143 +236,6 @@ AFRAME.registerComponent('andar-clicando', {
     }
     marcador.object3D.visible = !!ponto;
     if (ponto) marcador.object3D.position.set(ponto.x, 0.02, ponto.z);
-  }
-});
-
-// Mãos sem controles (hand tracking): estique o braço e aponte.
-// - Apontando para um botão: ele acende; pince e solte para clicar.
-// - Apontando para o chão: aparece o anel; pince e solte para teleportar.
-// O raio sai de um ponto perto do ombro e passa pela mão, como o ponteiro do Quest.
-AFRAME.registerComponent('andar-mao', {
-  schema: {
-    lado: { default: 1 },               // 1 = mão direita, -1 = esquerda
-    laserSempre: { default: false },    // mostra o laser mesmo sem alvo (braço esticado)
-    alcanceLaser: { default: 3 }
-  },
-
-  init: function () {
-    this.cabeca = new THREE.Vector3();
-    this.ombro = new THREE.Vector3();
-    this.mao = new THREE.Vector3();
-    this.dir = new THREE.Vector3();
-    this.direita = new THREE.Vector3();
-    this.quat = new THREE.Quaternion();
-    this.matriz = new THREE.Matrix4();
-    this.raycaster = new THREE.Raycaster();
-    this.alvo = null;      // ponto no chão
-    this.botao = null;     // botão na mira
-    this.armado = null;    // o que será acionado ao soltar a pinça
-
-    const cena = this.el.sceneEl;
-    this.marcador = document.createElement('a-ring');
-    this.marcador.setAttribute('rotation', '-90 0 0');
-    this.marcador.setAttribute('radius-inner', 0.14);
-    this.marcador.setAttribute('radius-outer', 0.2);
-    this.marcador.setAttribute('material', 'color: #00ffff; side: double; transparent: true; opacity: 0.9; shader: flat');
-    this.marcador.setAttribute('visible', false);
-    cena.appendChild(this.marcador);
-
-    this.raio = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
-      new THREE.LineBasicMaterial({ color: '#00ffff', transparent: true, opacity: 0.7 })
-    );
-    this.raio.frustumCulled = false;
-    this.raio.visible = false;
-    cena.object3D.add(this.raio);
-
-    this.el.addEventListener('pinchstarted', () => {
-      const botao = this.botao;
-      const alvo = this.alvo && this.alvo.clone();
-      // Espera o 'pinca-qubit' decidir se a pinça pegou o qubit.
-      setTimeout(() => {
-        const pinca = this.el.components['pinca-qubit'];
-        if (pinca && pinca.pegouQubit) { this.armado = null; return; }
-        this.armado = botao ? { botao } : alvo ? { alvo } : null;
-      }, 0);
-    });
-    this.el.addEventListener('pinchended', () => {
-      const a = this.armado;
-      this.armado = null;
-      if (!a) return;
-      if (a.botao) a.botao.emit('click', { cursorEl: this.el });
-      else if (a.alvo) QL.irPara(a.alvo);
-    });
-  },
-
-  definirBotao: function (novo) {
-    if (novo === this.botao) return;
-    const comp = (el) => el && el.components['botao-neon'];
-    if (comp(this.botao)) comp(this.botao).hover(this.el, false);
-    if (comp(novo)) comp(novo).hover(this.el, true);
-    this.botao = novo;
-  },
-
-  tick: function () {
-    const maos = this.el.components['hand-tracking-controls'];
-    const camera = this.el.sceneEl.camera;
-    this.alvo = null;
-    let novoBotao = null;
-    let pontoRaio = null;
-
-    if (maos && maos.hasPoses && camera) {
-      // Junta da base do dedo indicador (índice 6): estável mesmo pinçando.
-      this.mao.setFromMatrixPosition(this.matriz.fromArray(maos.jointPoses, 6 * 16));
-      this.el.object3D.localToWorld(this.mao);
-
-      camera.getWorldPosition(this.cabeca);
-      camera.getWorldQuaternion(this.quat);
-      this.direita.set(1, 0, 0).applyQuaternion(this.quat);
-      this.direita.y = 0;
-      this.direita.normalize();
-      this.ombro.copy(this.cabeca).addScaledVector(this.direita, 0.15 * this.data.lado);
-      this.ombro.y -= 0.25;
-
-      this.dir.subVectors(this.mao, this.ombro);
-      const bracoEsticado = this.dir.length() > 0.3;
-      this.dir.normalize();
-
-      if (bracoEsticado) {
-        // 1) Botões ativos na mira.
-        const malhas = [];
-        document.querySelectorAll('.botao').forEach((b) => {
-          const m = b.getObject3D('mesh');
-          if (m) malhas.push(m);
-        });
-        this.raycaster.set(this.mao, this.dir);
-        const hits = this.raycaster.intersectObjects(malhas, false);
-        if (hits.length) {
-          novoBotao = hits[0].object.el;
-          pontoRaio = hits[0].point;
-        } else if (this.dir.y < -0.1) {
-          // 2) Chão (y = 0), dentro dos limites do mapa atual.
-          const rig = document.querySelector('#jogador');
-          const limite = rig ? rig.components['limites-plataforma'].data.meiaLargura : 4.6;
-          const t = -this.mao.y / this.dir.y;
-          const x = this.mao.x + this.dir.x * t;
-          const z = this.mao.z + this.dir.z * t;
-          if (Math.abs(x) < limite && Math.abs(z) < limite && t < 30) {
-            this.alvo = new THREE.Vector3(x, 0, z);
-            pontoRaio = this.alvo;
-          }
-        }
-        // Laser contínuo: sem alvo, o raio segue até o alcance máximo.
-        if (!pontoRaio && this.data.laserSempre) {
-          pontoRaio = this.mao.clone().addScaledVector(this.dir, this.data.alcanceLaser);
-        }
-      }
-    }
-
-    this.definirBotao(novoBotao);
-
-    this.marcador.object3D.visible = !!this.alvo;
-    this.raio.visible = !!pontoRaio;
-    if (this.alvo) this.marcador.object3D.position.set(this.alvo.x, 0.02, this.alvo.z);
-    if (pontoRaio) {
-      const pos = this.raio.geometry.attributes.position;
-      pos.setXYZ(0, this.mao.x, this.mao.y, this.mao.z);
-      pos.setXYZ(1, pontoRaio.x, Math.max(pontoRaio.y, 0.02), pontoRaio.z);
-      pos.needsUpdate = true;
-    }
   }
 });
 

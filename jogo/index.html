@@ -43,6 +43,8 @@
                   botao-neon="texto: 2. Qubit; subtexto: Esfera de Bloch; largura: 1.3; altura: 0.75; acao: mapa:qubit"></a-entity>
         <a-entity class="botao" position="1.55 1.45 -1.6" rotation="0 -20 0"
                   botao-neon="texto: 3. Circuit; subtexto: Montar circuitos; largura: 1.3; altura: 0.75; acao: mapa:circuit"></a-entity>
+        <a-entity class="botao" position="0 0.03 1.2" rotation="-90 0 0"
+                  botao-neon="texto: SAIR DO VR; largura: 1.2; altura: 0.5; tamanhoTexto: 0.42; acao: sair-vr"></a-entity>
       </a-entity>
 
       <!-- ===== Mapa: Quântico (plataforma grande) ===== -->
@@ -99,7 +101,9 @@
         </a-entity>
         <a-entity class="botao" position="-1.2 0.03 0.8" rotation="-90 0 0"
                   botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
-      </a-entity>
+
+        <a-entity class="botao" position="1.2 0.03 0.8" rotation="-90 0 0"
+                  botao-neon="texto: SAIR DO VR; largura: 1.2; altura: 0.5; tamanhoTexto: 0.42; acao: sair-vr"></a-entity>      </a-entity>
 
       <!-- ===== Mapa: Qubit (esfera de Bloch) ===== -->
       <a-entity mapa="nome: qubit; tamanho: 10; inicioZ: 2.8; obstaculo: 0.75">
@@ -122,7 +126,9 @@
 
         <a-entity class="botao" position="-1.2 0.03 0.6" rotation="-90 0 0"
                   botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
-      </a-entity>
+
+        <a-entity class="botao" position="1.2 0.03 0.6" rotation="-90 0 0"
+                  botao-neon="texto: SAIR DO VR; largura: 1.2; altura: 0.5; tamanhoTexto: 0.42; acao: sair-vr"></a-entity>      </a-entity>
 
       <!-- ===== Mapa: Circuit (plataforma grande) ===== -->
       <a-entity mapa="nome: circuit; tamanho: 40; inicioZ: 3">
@@ -131,10 +137,13 @@
                   position="0 2.4 -3"></a-entity>
         <a-entity class="botao" position="-1.2 0.03 0.8" rotation="-90 0 0"
                   botao-neon="texto: MENU; largura: 1.2; altura: 0.5; tamanhoTexto: 0.5; acao: mapa:menu"></a-entity>
-      </a-entity>
+
+        <a-entity class="botao" position="1.2 0.03 0.8" rotation="-90 0 0"
+                  botao-neon="texto: SAIR DO VR; largura: 1.2; altura: 0.5; tamanhoTexto: 0.42; acao: sair-vr"></a-entity>      </a-entity>
 
       <!-- ===== Jogador ===== -->
-      <!-- Anda por clique no chão, WASD, laser + gatilho, analógico ou mão (apontar e pinçar) -->
+      <!-- Interação principal: controles do Quest (laser + gatilho para apontar, clicar e girar o qubit;
+           analógico para andar). No PC: mouse e WASD. -->
       <a-entity id="jogador" position="0 0 2.5" limites-plataforma mover-jogador>
         <a-entity camera position="0 1.6 0"
                   look-controls="pointerLockEnabled: false"
@@ -142,15 +151,6 @@
         <a-entity laser-controls="hand: right" raycaster="objects: .interagivel, .botao, .chao; lineColor: #00ffff"></a-entity>
         <a-entity laser-controls="hand: left" raycaster="objects: .interagivel, .botao, .chao; lineColor: #00ffff"
                   andar-vr="rig: #jogador"></a-entity>
-        <!-- Mãos sem controles (Meta Quest):
-             - pinçar perto do qubit para pegar e girar
-             - apontar para um botão ou para o chão, pinçar e soltar para clicar/teleportar -->
-        <a-entity hand-tracking-controls="hand: right; modelColor: #00ffff; modelOpacity: 0.7"
-                  pinca-qubit="qubit: #qubit"
-                  andar-mao="lado: 1"></a-entity>
-        <a-entity hand-tracking-controls="hand: left; modelColor: #00ffff; modelOpacity: 0.7"
-                  pinca-qubit="qubit: #qubit"
-                  andar-mao="lado: -1"></a-entity>
       </a-entity>
     </a-scene>
   </body>

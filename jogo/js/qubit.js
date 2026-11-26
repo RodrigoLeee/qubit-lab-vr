@@ -258,6 +258,7 @@
       } else {
         // Controle do headset: acompanha o giro do controle enquanto o gatilho estiver apertado.
         this.arrastando = cursor;
+        QL.vibrar(cursor);
         this.angulosControle = this.lerAngulosControle(cursor);
         cursor.addEventListener('triggerup', this.aoSoltarGatilho);
       }
@@ -301,55 +302,8 @@
       };
     },
 
-    // ---------- Mãos (hand tracking do Meta Quest): pinçar para pegar ----------
-    //
-    // Ao pinçar perto do qubit, a esfera "gruda" na mão: a cada movimento,
-    // o vetor de estado gira o mesmo ângulo que a mão girou em volta do centro.
-
-    centroERaioMundo: function () {
-      const centro = new THREE.Vector3();
-      const escala = new THREE.Vector3();
-      this.el.object3D.getWorldPosition(centro);
-      this.el.object3D.getWorldScale(escala);
-      return { centro, raio: this.data.raio * escala.x };
-    },
-
-    iniciarPinca: function (mao, posMundo) {
-      if (this.arrastando || !QL.visivel(this.el.object3D)) return false;
-      const { centro, raio } = this.centroERaioMundo();
-      const dir = posMundo.clone().sub(centro);
-      const distancia = dir.length();
-      if (distancia > raio * 1.6 || distancia < 0.03) return false;
-      this.arrastando = mao;
-      this.modoPinca = true;
-      this.ultimaDirPinca = dir.normalize();
-      this.destacar(true);
-      return true;
-    },
-
-    moverPinca: function (mao, posMundo) {
-      if (this.arrastando !== mao || !this.modoPinca) return;
-      const { centro } = this.centroERaioMundo();
-      const dir = posMundo.clone().sub(centro);
-      if (dir.length() < 0.03) return; // mão no centro: direção indefinida
-      dir.normalize();
-      const giro = new THREE.Quaternion().setFromUnitVectors(this.ultimaDirPinca, dir);
-      const v = bloch(this.theta, this.phi, 1).applyQuaternion(giro);
-      this.theta = Math.acos(THREE.MathUtils.clamp(v.y, -1, 1));
-      this.phi = (Math.atan2(v.x, v.z) + 2 * Math.PI) % (2 * Math.PI);
-      this.ultimaDirPinca.copy(dir);
-      this.atualizar();
-    },
-
-    soltarPinca: function (mao) {
-      if (this.arrastando !== mao) return;
-      this.arrastando = null;
-      this.modoPinca = false;
-      this.destacar(false);
-    },
-
     tick: function () {
-      if (!this.arrastando || this.arrastando === 'mouse' || this.modoPinca) return;
+      if (!this.arrastando || this.arrastando === 'mouse') return;
       const atual = this.lerAngulosControle(this.arrastando);
       let dYaw = atual.yaw - this.angulosControle.yaw;
       if (dYaw > Math.PI) dYaw -= 2 * Math.PI;
@@ -432,39 +386,6 @@
         alvo: ESTADOS[this.alvo].nome,
         encontrado: this.encontrado
       });
-    }
-  });
-
-  // Liga os gestos de pinça de uma mão (hand-tracking-controls) ao qubit.
-  AFRAME.registerComponent('pinca-qubit', {
-    schema: { qubit: { type: 'selector' } },
-
-    init: function () {
-      this.pos = new THREE.Vector3();
-      this.pegouQubit = false; // lido pelo 'andar-mao' para não teleportar ao soltar o qubit
-      this.el.addEventListener('pinchstarted', (e) => {
-        const q = this.qubit();
-        this.pegouQubit = !!q && q.iniciarPinca(this.el, this.posicaoMundo(e.detail.position));
-      });
-      this.el.addEventListener('pinchmoved', (e) => {
-        const q = this.qubit();
-        if (q) q.moverPinca(this.el, this.posicaoMundo(e.detail.position));
-      });
-      this.el.addEventListener('pinchended', () => {
-        const q = this.qubit();
-        if (q) q.soltarPinca(this.el);
-      });
-    },
-
-    qubit: function () {
-      return this.data.qubit && this.data.qubit.components.qubit;
-    },
-
-    // A posição da pinça vem no espaço local da mão; converte para o mundo
-    // (considera o jogador ter andado pela plataforma).
-    posicaoMundo: function (local) {
-      this.pos.copy(local);
-      return this.el.object3D.localToWorld(this.pos);
     }
   });
 
@@ -567,7 +488,7 @@
 
       if (estado.encontrado) {
         ctx.fillStyle = '#7dff9b';
-        ctx.fillText(`✓ Encontrou ${estado.alvo}!`, 40, 480);
+        ctx.fillText(`Encontrou ${estado.alvo}!`, 40, 480);
       } else {
         ctx.fillStyle = '#ffd23d';
         ctx.fillText(`Desafio: encontre ${estado.alvo}`, 40, 480);
@@ -575,7 +496,7 @@
 
       ctx.fillStyle = '#8fb3d9';
       ctx.font = `26px ${fonte}`;
-      ctx.fillText('Gire o qubit: arraste (mouse), gatilho (controle) ou pince com a mão', 40, 560);
+      ctx.fillText('Gire o qubit: aponte o controle e segure o gatilho (no PC, arraste com o mouse)', 40, 560);
 
       this.textura.needsUpdate = true;
     }
