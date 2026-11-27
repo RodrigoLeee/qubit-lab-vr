@@ -114,6 +114,8 @@ Mapa **Qubit**: um qubit interativo em cima de um pilar neon, que o jogador gira
 
 ## 5.4 Versão 4 — Modo Quântico, testes e controle como interação principal
 
+![Versão 4: menu com os botões das salas e o botão SAIR DO VR no chão](imagens/v4-menu.jpg)
+
 - **Modo Quântico:** três estações em arco (superposição, medição e emaranhamento), cada uma com botões e painel de explicação.
 - **Página de testes de interação:** olhar com tempo, aceno de cabeça, controle e PC, com o desafio da bolinha e a lousa desenhada com a cabeça.
 - **Testes no Meta Quest 3:** a pinça com as mãos misturava clicar e teleportar, e o olhar com tempo se mostrou lento; o controle funcionou bem em todas as salas (ver [`testes.md`](testes.md)).
