@@ -75,6 +75,24 @@ O jogo é publicado no GitHub Pages a cada merge na `main`:
 
 No Meta Quest 3, abra o endereço no navegador, toque em **VR** e use os controles: aponte o laser e aperte o gatilho. Para sair, use o botão **SAIR DO VR** no chão de cada sala.
 
+## Dispositivo testado
+
+| Dispositivo | Navegador | Interação | Acesso |
+|---|---|---|---|
+| Meta Quest 3 | Navegador do Meta Quest | Controles (laser + gatilho; analógico para andar) | GitHub Pages, com HTTPS |
+| Computador (Windows) | Chrome | Mouse e teclado (WASD) | Servidor local e GitHub Pages |
+
+## Decisões do projeto
+
+| Data | Decisão | Motivo |
+|---|---|---|
+| 17/11/2026 | Qubit com diâmetro de 3/5 da altura do jogador, sobre um pilar de 3/5 da altura | Com 1/3 da altura o qubit ficava baixo e pequeno; nessa escala ele fica na altura do olhar |
+| 23/11/2026 | Formas geométricas para conceitos e dados; modelos 3D só para objetos físicos e manipuláveis | A geometria em código segue fiel à matemática do estado; modelos entram onde a forma precisa ser reconhecida ou pega ([`assets.md`](docs/assets.md)) |
+| 25/11/2026 | Espaço organizado em salas (Menu, Quântico, Qubit e Circuito) | A ordem do percurso passa a ser a ordem do aprendizado ([`mapa_interacao.md`](docs/mapa_interacao.md)) |
+| 26/11/2026 | Controle como interação principal; pinça com as mãos removida | Nos testes, a pinça misturava clicar e teleportar e o olhar com tempo era lento ([`testes.md`](docs/testes.md)) |
+| 26/11/2026 | Olhar com tempo e aceno de cabeça mantidos na página de testes | Alternativa sem mãos, como pede o desafio de interação da disciplina ([`interacao.md`](docs/interacao.md)) |
+| 26/11/2026 | Publicação no GitHub Pages a cada merge na `main` | HTTPS válido e acesso pelo Quest em qualquer rede, sem configurar servidor ou certificado |
+
 ## Configuração para desenvolvimento
 
 Instale o git e clone este repositório:
