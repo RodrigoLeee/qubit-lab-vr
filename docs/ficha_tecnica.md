@@ -10,7 +10,7 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 | **Autor** | Rodrigo Hu Tchie Lee |
 | **Tipo** | Jogo educativo de visualização em realidade virtual |
 | **Público** | Estudantes da disciplina de computação quântica |
-| **Dispositivo-alvo** | Meta Quest 3 via navegador (WebXR), com rastreamento de mãos; fallback para desktop (mouse e teclado) |
+| **Dispositivo-alvo** | Meta Quest 3 via navegador (WebXR), com os controles como interação principal; fallback para desktop (mouse e teclado) |
 | **Tecnologias** | A-Frame 1.8 (WebXR / three.js), JavaScript, Caddy e Docker para servir com HTTPS |
 | **Modos** | 1. Quântico (fenômenos) · 2. Qubit (esfera de Bloch) · 3. Circuit (circuitos) |
 | **Navegação** | Menu principal neon; cada modo em um mapa próprio, com botão MENU no chão para voltar |
@@ -21,20 +21,19 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 
 **Implementado**
 - Plataforma neon de 10 × 10 m com o título "QUBIT LAB VR" e três botões: **1. Quântico**, **2. Qubit** e **3. Circuit**.
-- Os botões acendem ao serem apontados e são acionados com mouse, laser do controle ou apontando e pinçando com a mão.
+- Os botões acendem ao serem apontados e são acionados com o laser e o gatilho do controle (no PC, com o mouse), com vibração ao confirmar.
 - A troca de mapa acontece na mesma cena, sem sair do modo VR.
 
 ### 1. Quântico — fenômenos quânticos
 
 **Implementado**
-- Mapa próprio: plataforma de 40 × 40 m com as mecânicas de movimentação e o botão MENU no chão.
+- Mapa próprio: plataforma de 40 × 40 m com três estações em arco, cada uma com título, botões e painel de explicação:
+  - **Superposição:** um elétron com dois lobos (↑ e ↓) cujo tamanho mostra a chance de cada resultado; o botão *Mudar estado* alterna entre 50/50, 80/20 e 20/80.
+  - **Medição:** um elétron preparado com P(↑) = 70%; *Medir* colapsa o estado (medir de novo repete o resultado), *Medir 20×* preenche um histograma que se aproxima de 70/30, e *Preparar* volta à superposição.
+  - **Emaranhamento:** dois elétrons correlacionados; ao medir, os resultados saem sempre opostos, e o texto deixa claro que nada viaja de um para o outro.
 
 **Planejado**
-- Visualização guiada dos conceitos centrais:
-  - **Superposição:** um qubit que "vibra" entre |0⟩ e |1⟩ até ser medido.
-  - **Medição:** o estado colapsa visualmente num resultado; repetir mostra a distribuição de probabilidades.
-  - **Emaranhamento:** dois qubits correlacionados, em que medir um define o resultado do outro, mesmo distantes.
-  - **Interferência:** caminhos de amplitude que se reforçam ou se cancelam, como ondas de luz.
+- **Interferência:** caminhos de amplitude que se reforçam ou se cancelam, como ondas de luz.
 
 ### 2. Qubit — esfera de Bloch
 
@@ -44,10 +43,10 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 - **Ciclo trigonométrico no equador:** marcas a cada 15°, rótulos em 0°, 90°, 180° e 270°, arcos dos ângulos θ e φ e projeção da ponta do vetor no plano do equador.
 - **Painel de estado** ao lado da esfera, sempre virado para o jogador: θ, φ, amplitudes α e β e probabilidades P(0) e P(1).
 - **Desafio:** o painel sorteia um estado da base para o jogador encontrar; ao chegar a menos de 8° dele, o acerto é confirmado e um novo alvo é sorteado.
-- Rotação do qubit com mouse, com laser e gatilho do controle ou **pinçando com a mão**.
+- Rotação do qubit com o controle: apontar o laser para a esfera e segurar o gatilho (no PC, arrastar com o mouse).
 
 **Planejado**
-- Medição: colapso aleatório do estado segundo P(0) e P(1), com histograma de repetições para comparar com a previsão.
+- Medição do qubit na própria esfera de Bloch, reaproveitando a estação de medição do modo Quântico.
 
 ### 3. Circuit — montar circuitos
 
@@ -86,7 +85,7 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 ### 3. Teste da tela — por que não numa tela
 
 - Em 2D, faria mais sentido criar diagramas, desenhos matemáticos e simuladores para interagir. Esses recursos acabam orientados principalmente para **realizar cálculos**, e não para o **aprendizado imersivo geral**.
-- Em VR, conceitos tridimensionais como a esfera de Bloch e as rotações viram objetos que o usuário pega e gira com as mãos. A **intuição espacial** é o ganho que a tela não oferece.
+- Em VR, conceitos tridimensionais como a esfera de Bloch e as rotações viram objetos que o usuário aponta, pega e gira com o controle na mão. A **intuição espacial** é o ganho que a tela não oferece.
 
 ### 4. Moldura — o que fica dentro, e se ela se mostra
 
@@ -101,8 +100,9 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 - **Onde fica:** em pé sobre a plataforma, em escala humana (olhos a 1,6 m), com o qubit na altura do olhar.
 - **O que pode fazer:**
   - **Olhar** ao redor em 360° e andar fisicamente pelo espaço (roomscale).
-  - **Pegar e girar** o qubit com o mouse, com o controle ou pinçando com a mão.
-  - **Apontar e clicar** em botões e no chão: mouse, laser do controle ou apontar a mão e pinçar.
+  - **Pegar e girar** o qubit com o controle (laser + gatilho) ou, no PC, com o mouse.
+  - **Apontar e clicar** em botões e no chão com o laser e o gatilho do controle, com vibração ao confirmar.
+  - **Sair do VR** pelo botão no chão de cada sala, ao lado do MENU.
   - **Se mover** pela plataforma: teleporte apontando para o chão (instantâneo no VR, para evitar enjoo), WASD no computador ou analógico do controle.
 - **Limites:** o jogador não sai da plataforma nem atravessa o pilar do qubit.
 - **Conforto:** a experiência pode ser feita em pé parado ou sentado, com os movimentos de câmera sempre controlados pelo usuário.
@@ -134,15 +134,14 @@ Mapeamento do que o headset capta do corpo do usuário e de como o jogo usa esse
 
 | Sinal | O que é captado | Como o jogo usa |
 |---|---|---|
-| **Cabeça (headset)** | Posição e rotação da cabeça em 6 graus de liberdade: para onde o usuário olha e onde está no espaço | Câmera da cena (olhar em 360° e andar fisicamente), painel sempre virado para o usuário, limites da plataforma e origem estimada do raio de apontar com a mão |
-| **Mãos (hand tracking)** | Posição das 25 articulações de cada mão e o gesto de pinça (polegar + indicador) | Apontar e pinçar para clicar nos botões e teleportar; pinçar perto do qubit para pegar e girar a esfera |
-| **Controles** (opcional) | Posição e rotação dos controles, gatilho e analógico | Laser para apontar, gatilho para clicar e girar o qubit, analógico para andar |
+| **Cabeça (headset)** | Posição e rotação da cabeça em 6 graus de liberdade: para onde o usuário olha e onde está no espaço | Câmera da cena (olhar em 360° e andar fisicamente), painel sempre virado para o usuário, limites da plataforma e orientação dos painéis |
+| **Controles** | Posição e rotação dos controles, gatilho e analógico | Laser para apontar, gatilho para clicar e girar o qubit, analógico para andar; o controle vibra ao confirmar |
 
 ### Planejado — dados derivados (sem sensor extra)
 
 - **Altura do usuário:** altura da cabeça em relação ao chão, para ajustar o pilar e o qubit à altura de cada pessoa.
-- **Alcance do braço:** maior distância entre a mão e a cabeça, para posicionar objetos ao alcance.
-- **Mão dominante:** qual mão pinça e aponta mais.
+- **Alcance do braço:** maior distância entre o controle e a cabeça, para posicionar objetos ao alcance.
+- **Mão dominante:** qual controle aponta e confirma mais.
 - **Atenção:** para onde a cabeça aponta e por quanto tempo (o Quest 3 não tem rastreamento ocular; a direção da cabeça é a aproximação do olhar).
 - **Conforto e enjoo:** movimentos bruscos de cabeça, pausas longas ou saída antecipada como indicadores de desconforto.
 
@@ -156,7 +155,15 @@ Mapeamento do que o headset capta do corpo do usuário e de como o jogo usa esse
 ### Privacidade
 
 - Os dados são usados **só em tempo real**, dentro do navegador: nada é gravado nem enviado para servidor.
-- Dados de movimento do corpo podem identificar uma pessoa (o padrão de movimento da cabeça e das mãos é quase único). Qualquer coleta de métricas deve:
+- Dados de movimento do corpo podem identificar uma pessoa (o padrão de movimento da cabeça e dos braços é quase único). Qualquer coleta de métricas deve:
   - pedir **consentimento** explícito antes de coletar;
   - guardar apenas dados **agregados ou anonimizados** (por exemplo, "tempo para encontrar |+⟩", não a trajetória completa da cabeça);
   - seguir a **LGPD**, informando o que é coletado, para quê e por quanto tempo.
+
+## O que mudou na ficha
+
+| Data | Campo | Mudança | Por quê |
+|---|---|---|---|
+| 25/11/2026 | Domínio e Moldura | O espaço passou a ser organizado em **salas** (Menu, Quântico, Qubit e Circuit), cada uma com uma função e ligada às outras pelo menu | A planta e o percurso deixam o espaço legível na ordem em que o corpo o atravessa |
+| 26/11/2026 | Corpo | A interação principal passou a ser o **controle**; a pinça com as mãos foi removida | Nos testes, a pinça misturava clicar e teleportar, o olhar com tempo era lento e o controle funcionou bem em todas as salas |
+| 26/11/2026 | Modos | As três estações do modo Quântico (superposição, medição e emaranhamento) passaram de planejadas a implementadas | Primeira versão jogável do conteúdo conceitual |
