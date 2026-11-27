@@ -135,6 +135,7 @@ O detalhamento está na seção "Dados coletados do usuário" da [ficha técnica
 
 - Novas rodadas de testes com outros participantes, para confirmar o pivô para o controle.
 - Conteúdo do modo **Circuit**: montar conexões, escolher portas quânticas e, como potencial, exportar o circuito.
+- **Portas entre salas** vizinhas, que teleportam de uma sala para a outra e fazem dos mapas separados um único lugar contínuo.
 - Estação de **interferência** no modo Quântico.
 - Assets modelados no Blender para os objetos físicos (bancada e portas do Circuit).
 - Som ambiente e efeitos sonoros.

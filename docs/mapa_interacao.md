@@ -17,13 +17,22 @@ A experiência é organizada em **salas**. O **Menu** é o ponto de partida e li
 
 O chão quadriculado de 1 m, presente em todas as salas, é a **régua** do espaço: mostra escala e distância sem precisar de instrução.
 
+### Portas entre salas
+
+A planta mostra passagens diretas entre salas vizinhas (Quântico ↔ Qubit ↔ Circuito), além das ligações com o Menu. Dessas setas surgiu a ideia de **portas que teleportam de uma sala para a outra**: ao atravessar a porta, o jogador chega à sala vizinha sem precisar voltar ao Menu.
+
+- **Por quê:** tecnicamente, cada sala é um mapa separado, como uma página. As portas fazem esses mapas serem percebidos como **um único lugar**, com salas ao lado umas das outras, e não como telas que se trocam. O percurso ganha continuidade espacial e reforça a **ilusão de lugar** (Slater) e a leitura do espaço na ordem em que o corpo o atravessa (Lynch).
+- **Referência:** as câmaras de teste de *Portal 2*, ligadas por portas e passagens que marcam o fim de um desafio e o começo do próximo (ver [`moodboard.md`](moodboard.md)).
+- **Forma:** uma porta em neon na borda de cada sala, com o nome da sala de destino acima, acionada com o laser e o gatilho.
+- **Estado:** planejado; hoje a troca de sala é feita pelo Menu e pelo botão **MENU** no chão.
+
 ## 2. Percurso do corpo
 
 | Etapa | Onde o corpo está | O que vê primeiro | Como segue |
 |---|---|---|---|
 | **Início** | Em pé no Menu, de frente para os botões | O título "QUBIT LAB VR" e os três botões em arco, na altura dos olhos | Aponta o controle para uma sala e aperta o gatilho |
-| **1. Quântico** | Na borda de uma plataforma de 40 × 40 m | As três estações em arco, cada uma com título numerado | Aponta para o chão e teleporta até cada estação |
-| **2. Qubit** | Diante do pilar central | A esfera de Bloch na altura do olhar, com o painel de estado ao lado | Aponta para a esfera e gira o qubit segurando o gatilho |
+| **1. Quântico** | Na borda de uma plataforma de 40 × 40 m | As três estações em arco, cada uma com título numerado | Aponta para o chão e teleporta até cada estação; pela porta, segue para o Qubit (planejado) |
+| **2. Qubit** | Diante do pilar central | A esfera de Bloch na altura do olhar, com o painel de estado ao lado | Aponta para a esfera e gira o qubit segurando o gatilho; pela porta, segue para o Circuito (planejado) |
 | **3. Circuito** | Diante da bancada (em desenvolvimento) | A bancada com os fios dos qubits | Monta conexões e encaixa portas |
 | **Saída** | No chão de cada sala | Os botões **MENU** e **SAIR DO VR** | Volta ao Menu ou sai da experiência |
 
@@ -43,7 +52,7 @@ O chão quadriculado de 1 m, presente em todas as salas, é a **régua** do espa
 
 **Primeira vista:** ao entrar em cada sala, o jogador é colocado de frente para o conteúdo principal; nenhuma sala começa de costas para o que importa.
 
-**Passagem controlada:** as salas só se abrem pelo Menu. O jogador escolhe a sala, mas cada sala libera seu conteúdo por etapas (por exemplo, na Medição, primeiro medir, depois repetir e só então ler o histograma).
+**Passagem controlada:** hoje as salas se abrem pelo Menu; com as portas entre salas, cada sala passa a liberar a seguinte, na ordem do aprendizado. O jogador escolhe a sala, mas cada sala libera seu conteúdo por etapas (por exemplo, na Medição, primeiro medir, depois repetir e só então ler o histograma).
 
 **Régua do corpo**
 
@@ -66,6 +75,7 @@ Mirar é apontar o laser do controle; confirmar é apertar o gatilho. Cada confi
 | Circuito | Laser + gatilho | Montar conexões e encaixar portas (em desenvolvimento) | O estado atravessa as portas até o resultado |
 | Todas | Laser no chão + gatilho | Teleportar | Anel ciano marca o destino |
 | Todas | Analógico esquerdo | Andar | Deslocamento contínuo pela plataforma |
+| Quântico, Qubit e Circuito | Laser + gatilho na porta (planejado) | Ir para a sala vizinha | Teleporte para a sala de destino, chegando de frente para o conteúdo |
 
 ## 6. Elementos imersivos por parada
 
@@ -82,6 +92,7 @@ Para cada elemento, a relação com a técnica (Ihde e Verbeek) e a ilusão que 
 | Qubit | Painel de estado e desafio | Texto e resposta | Alteridade: o painel "pede" um estado ao jogador | Plausibilidade |
 | Circuito | Bancada e portas encaixáveis | Objeto (em desenvolvimento) | Incorporação, ao encaixar as peças | Lugar e plausibilidade |
 | Todas | Som ambiente elétrico | Som (planejado) | Fundo | Lugar |
+| Entre salas | Portas neon que levam à sala vizinha | Objeto e resposta (planejado) | Imersão: o ambiente reconhece a passagem e leva o jogador adiante | Lugar |
 
 ## 7. Coerência do mundo
 
@@ -91,6 +102,6 @@ Para cada elemento, a relação com a técnica (Ihde e Verbeek) e a ilusão que 
 
 ## 8. O que mudou na ficha
 
-1. O espaço deixou de ser um mapa único e passou a ser organizado em **salas**, para que a ordem do percurso seja a ordem do aprendizado.
+1. O espaço deixou de ser um mapa único e passou a ser organizado em **salas**, para que a ordem do percurso seja a ordem do aprendizado; portas entre salas vizinhas devem fazer das salas um único lugar contínuo.
 2. A interação principal passou a ser o **controle**: nos testes, a pinça misturava clicar e teleportar e o olhar com tempo era lento.
 3. O **corpo** passou a ser pensado como quem percebe agindo: o controle incorporado deixa a atenção livre para os fenômenos quânticos.
