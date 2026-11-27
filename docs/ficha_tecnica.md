@@ -69,6 +69,7 @@ Ficha técnica da experiência imersiva: modos de jogo, eixos da experiência (d
 
 **Planejado**
 - Ambientação de cada mapa conforme o modo: um campo de partículas (Quântico) e um laboratório-bancada (Circuit).
+- **Portas entre salas:** portas neon que teleportam para a sala vizinha (Quântico ↔ Qubit ↔ Circuito), para que os mapas, que são separados, sejam percebidos como um único lugar contínuo (ver [`mapa_interacao.md`](mapa_interacao.md)).
 
 ### 2. Sentir — o que, e para quê
 
@@ -165,5 +166,6 @@ Mapeamento do que o headset capta do corpo do usuário e de como o jogo usa esse
 | Data | Campo | Mudança | Por quê |
 |---|---|---|---|
 | 25/11/2026 | Domínio e Moldura | O espaço passou a ser organizado em **salas** (Menu, Quântico, Qubit e Circuit), cada uma com uma função e ligada às outras pelo menu | A planta e o percurso deixam o espaço legível na ordem em que o corpo o atravessa |
+| 25/11/2026 | Domínio | Planejadas **portas entre salas vizinhas**, que teleportam de uma sala para a outra | Dão a sensação de um lugar contínuo, apesar de cada sala ser um mapa separado |
 | 26/11/2026 | Corpo | A interação principal passou a ser o **controle**; a pinça com as mãos foi removida | Nos testes, a pinça misturava clicar e teleportar, o olhar com tempo era lento e o controle funcionou bem em todas as salas |
 | 26/11/2026 | Modos | As três estações do modo Quântico (superposição, medição e emaranhamento) passaram de planejadas a implementadas | Primeira versão jogável do conteúdo conceitual |

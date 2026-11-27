@@ -2,6 +2,12 @@
 
 Atmosfera da experiência: um **laboratório quântico noturno, elétrico e tecnológico**, organizado em salas de teste. As principais referências são a estética de luz e grade de *Tron: Legacy* e a organização em câmaras de teste de *Portal 2*.
 
+## Prancha
+
+![Prancha do moodboard: capturas da sala Quântico, do menu, da plataforma neon, do qubit na esfera de Bloch e do emaranhamento, marcadas pela referência de origem, com a paleta e as palavras-chave](imagens/moodboard.jpg)
+
+A prancha reúne capturas do próprio jogo. A borda e a etiqueta de cada imagem indicam de qual referência ela vem: ciano para *Tron: Legacy* (cor, luz e forma) e magenta para *Portal 2* (salas, sinalização e guia). Embaixo ficam a paleta e as palavras-chave.
+
 ## Referências do próprio projeto
 
 | Plataforma neon (versão 1) | Qubit na esfera de Bloch (versão 2) |
