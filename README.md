@@ -82,6 +82,16 @@ No Meta Quest 3, abra o endereço no navegador, toque em **VR** e use os control
 | Meta Quest 3 | Navegador do Meta Quest | Controles (laser + gatilho; analógico para andar) | GitHub Pages, com HTTPS |
 | Computador (Windows) | Chrome | Mouse e teclado (WASD) | Servidor local e GitHub Pages |
 
+## Prova de conceito
+
+A prova de conceito, entregue em 27/11/2026, verifica se a **experiência em WebXR roda direto no navegador do Meta Quest 3**, sem instalar nada, e qual entrada funciona melhor para mirar e confirmar.
+
+| Pergunta | Como foi demonstrado | Resultado |
+|---|---|---|
+| O A-Frame com WebXR roda no Quest pelo navegador? | Jogo publicado no GitHub Pages, com HTTPS, aberto no navegador do Quest e jogado em VR | Funciona: menu, salas Quântico e Qubit, teleporte, vibração do controle e botão SAIR DO VR |
+| Qual entrada usar para mirar e confirmar? | [Página de testes](https://rodrigoleee.github.io/qubit-lab-vr/testes.html) com olhar com tempo, aceno de cabeça, controle e PC, no desafio de lançar a bolinha pela mesma função `lancar()` | Controle como interação principal; pinça com as mãos removida ([`testes.md`](docs/testes.md)) |
+| Dá para lançar sem usar as mãos? | Olhar com tempo e aceno de cabeça na página de testes | Funciona, mas o olhar com tempo é lento; as duas entradas seguem como alternativa sem mãos ([`interacao.md`](docs/interacao.md)) |
+
 ## Decisões do projeto
 
 | Data | Decisão | Motivo |
